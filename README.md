@@ -250,6 +250,19 @@ That run also showed a flaw. "Run the tests" should have gone to Haiku, but the 
 
 Limits: two runs, both small jobs. For a job this small, delegating costs more than doing it in the main chat, because of the subagent's startup. I did not compare answer quality between models.
 
+## Which model, which effort
+
+**GUIDE.md** is a one-page guide: which model fits which job, what the choice costs, and where to set it.
+
+The same month of my calls at each model's list price (computed; assumes the token counts would not change with the model):
+
+| Calls | Haiku 5.5 | Sonnet 5.5 | Opus 5.5 | Fable 5.2 |
+|---|---|---|---|---|
+| All 39,275 calls | US$974 | US$2,509 | US$5,019 | US$7,131 |
+| The 3,713 subagent calls | US$57 | US$176 | US$352 | US$545 |
+
+Haiku 5.5 is 1/20 the price of Sonnet 5.5 per token, but only 0.4x here. A Haiku prompt above 100,000 tokens pays 5 times the price, and 96% of my calls were above that (measured). `python analyze_usage.py` prints both rows at the end of its report.
+
 ## Run it on your own logs
 
 You need Python 3.9 or newer. No packages to install.
@@ -316,10 +329,11 @@ It runs the price function, the simulator, the before and after helpers and the 
 
 - **extract_usage.py** reads the Claude Code logs and writes one row per API call to **data/usage.csv**.
 - **prices.py** holds the price table and the function that turns tokens into dollars.
-- **analyze_usage.py** prints the baseline report and, with `--split`, the before and after comparison.
+- **analyze_usage.py** prints the baseline report (ending with the same calls priced on each model) and, with `--split`, the before and after comparison.
 - **simulate.py** runs the what-if comparison.
 - **audit_startup.py** sizes each part of a session's first prompt.
 - **.claude/skills/delegate/SKILL.md** is the `/delegate` skill.
+- **GUIDE.md** is the guide for picking a model and an effort level.
 - **test_simulate.py** checks **prices.py**, **analyze_usage.py**, **simulate.py** and **audit_startup.py**.
 
 ## Next
@@ -328,7 +342,6 @@ Not built yet:
 
 - More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
 - More measured `/delegate` runs, on bulk reading jobs where it should pay.
-- A short guide for picking the model and effort for a task.
 - A longer before and after comparison once these are in daily use. The one above covers four days.
 
 I planned a warning for sessions that pass the cap. I dropped it: the built-in setting above already does the job.

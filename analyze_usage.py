@@ -18,6 +18,7 @@ from prices import cost_parts
 DATA = Path(__file__).parent / "data"
 PARTS = ("in", "out", "write", "read")
 MIN_CALLS = 100  # --split skips a model with fewer calls than this in either period: too few to compare
+CURRENT = ("claude-fable-5-2", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5")  # models compared by reprice()
 DROP = 0.7  # a prompt below 70% of the previous call's prompt counts as a compaction (context was summarized)
 
 
@@ -80,6 +81,13 @@ def compactions(rows):
         rs = sorted(rs, key=lambda r: r["ts"])
         pairs += [(a, b) for a, b in zip(rs, rs[1:]) if b["ctx"] < DROP * a["ctx"]]
     return pairs
+
+
+def reprice(rows, models=CURRENT):
+    """US$ for the same calls at each model's list price, standard speed.
+    ASSUMES the token counts would not change with the model; in practice they do."""
+    return {m: sum(sum(cost_parts(m, r["in"], r["cache_write_5m"], r["cache_write_1h"], r["cache_read"], r["out"]))
+                   for r in rows) for m in models}
 
 
 def before_after(rows, split):
@@ -166,6 +174,13 @@ def main():
         print(f"{lo:4d}-{hi:<5d}k {100 * sum(r['w'] for r in rs) / mt:3.0f}%  {len(rs)} calls")
 
     table("tools called (by spend of the calling turn)", group([r for r in rows if r["tools"]], lambda r: r["tools"].split("|")[0]), 12)
+
+    # The model choice in dollars: identical calls, four price lists
+    print("\n== the same calls at each model's prices (assumes equal token counts) ==")
+    for title, rs in (("all calls", rows), ("subagent calls only", [r for r in rows if r["subagent"]])):
+        costs = reprice(rs)
+        low = costs["claude-sonnet-5-5"]
+        print(f"{title}: " + "  ".join(f"{m[7:]} {usd(c).strip()} ({c / low:.1f}x Sonnet)" for m, c in costs.items()))
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 import json
 from math import isclose
 
-from analyze_usage import compactions, per_call, price
+from analyze_usage import compactions, per_call, price, reprice
 from audit_startup import first_request
 from prices import cost_parts
 from simulate import CARRY_TOKENS, call_cost, simulate
@@ -86,6 +86,14 @@ def test_per_call():
     assert isclose(opus[OPUS]["out"], 0.01)         # 500 output tokens at $20 per million
     assert isclose(opus[OPUS]["usd"], 0.04 + 0.01 + 10 * 4e-6)  # plus 10 fresh input tokens at $4 per million
     assert opus[OPUS]["prompt"] == 200_010          # median prompt, tokens
+
+
+def test_reprice():
+    # One call: 100k cached tokens read, 10 fresh input tokens, 500 output tokens.
+    usd = reprice([call(100_000, write=0)], (OPUS, "claude-sonnet-5-5", "claude-haiku-5-5"))
+    assert isclose(usd[OPUS], 0.02 + 0.01 + 10 * 4e-6)
+    assert isclose(usd["claude-sonnet-5-5"], 0.01 + 0.005 + 10 * 2e-6)  # half of Opus on every price
+    assert isclose(usd["claude-haiku-5-5"], 5 * (0.001 + 0.00025 + 10 * 1e-7))  # prompt over 100k tokens: 5x
 
 
 def test_compactions():
