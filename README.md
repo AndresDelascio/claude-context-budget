@@ -186,6 +186,70 @@ Limits of the audit:
 - All my sessions run in the desktop app. A terminal session loads fewer tools and will look different.
 - It needs a recent Claude Code version. Older logs do not record the request.
 
+## Delegate a job to a cheaper model
+
+A subagent started from a chat on the top model runs on the top model too, unless told otherwise. `/delegate` is a small skill that hands one job to one subagent on the cheapest model that fits, so the main chat never has to switch models.
+
+```
+/delegate list every assumed constant in simulate.py
+/delegate sonnet add a test for the --since option
+```
+
+What the skill tells Claude to do:
+
+1. Pick the model. A word in front (`haiku`, `sonnet`, `opus`) forces it. Otherwise:
+
+   | Job | Model |
+   |---|---|
+   | Find, list, count, look up, read and summarize, run a command and report | Haiku |
+   | A well-specified edit, writing tests or docs | Sonnet |
+   | Hard debugging, design, costly if wrong | Opus |
+
+2. Write a brief of under 200 words: goal, files, what is already known, what done looks like, and a reply of at most 15 lines.
+3. Start one subagent on that model and tell it not to start agents of its own.
+4. Check the reply against the files before reporting, and say which model ran.
+
+Install it for all your projects by copying one folder (PowerShell):
+
+```powershell
+Copy-Item -Recurse .claude\skills\delegate $HOME\.claude\skills\
+```
+
+### One measured run
+
+I ran the steps of the skill once on the first example above, from a chat on Fable 5.2:
+
+| | Value | Kind |
+|---|---|---|
+| Model the subagent ran on | Haiku 5.5 | measured |
+| API calls | 4 | measured |
+| Tokens | 56,695 cache write, 156,079 cache read, 2,168 output | measured |
+| Agents started by the subagent | 0 | measured |
+| Cost on Haiku 5.5 | US$0.01 | computed |
+| Same tokens on Sonnet 5.5 | US$0.18 | computed, assumes the same token counts |
+| Same tokens on Fable 5.2 | US$0.68 | computed, assumes the same token counts |
+
+All four constants it reported were at the lines it gave. I checked them against the file.
+
+Two things this run shows:
+
+- **A subagent has its own startup cost.** Its first prompt was 47,954 tokens (measured) before it read anything. Delegating a tiny job does not pay. Delegating bulk reading does.
+- **The model choice matters most per job, not per month.** This job was about 70 times cheaper on Haiku than on Fable. Subagents were still only 7.2% of my spend.
+
+### The typed command, in a new session
+
+I then typed `/delegate` in a new session on Fable 5.2 and asked it to run the tests. From that session's log, all measured:
+
+- The subagent ran on Sonnet 5.5, in 3 API calls, and started no agents of its own.
+- The brief was 191 words.
+- The main chat re-ran the test command itself before reporting, and ended with `Ran on: sonnet.`
+
+The subagent cost US$0.15 (computed), against US$0.60 for the same tokens on Fable 5.2. Its first prompt was 48,643 tokens.
+
+That run also showed a flaw. "Run the tests" should have gone to Haiku, but the table said "tests" under Sonnet. I changed the rows to "run a command and report" (Haiku) and "writing tests" (Sonnet). The changed table is not re-tested.
+
+Limits: two runs, both small jobs. For a job this small, delegating costs more than doing it in the main chat, because of the subagent's startup. I did not compare answer quality between models.
+
 ## Run it on your own logs
 
 You need Python 3.9 or newer. No packages to install.
@@ -255,6 +319,7 @@ It runs the price function, the simulator, the before and after helpers and the 
 - **analyze_usage.py** prints the baseline report and, with `--split`, the before and after comparison.
 - **simulate.py** runs the what-if comparison.
 - **audit_startup.py** sizes each part of a session's first prompt.
+- **.claude/skills/delegate/SKILL.md** is the `/delegate` skill.
 - **test_simulate.py** checks **prices.py**, **analyze_usage.py**, **simulate.py** and **audit_startup.py**.
 
 ## Next
@@ -262,7 +327,7 @@ It runs the price function, the simulator, the before and after helpers and the 
 Not built yet:
 
 - More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
-- A `/delegate` command that hands one focused job to a subagent on a chosen model with a short brief, so the main chat never has to switch models.
+- More measured `/delegate` runs, on bulk reading jobs where it should pay.
 - A short guide for picking the model and effort for a task.
 - A longer before and after comparison once these are in daily use. The one above covers four days.
 
