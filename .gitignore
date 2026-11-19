@@ -1,0 +1,4 @@
+# personal usage data and prompt text written by extract_usage.py
+data/
+__pycache__/
+*.pyc
