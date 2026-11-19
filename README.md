@@ -97,6 +97,95 @@ The assumed values are close to what happened, and the cache re-write is slightl
 
 After the cap, a typical prompt is about 136k tokens, and about 85k of that is there before I type anything. That startup prompt is now the largest part left to cut.
 
+## What fills a new session
+
+`audit_startup.py` reads the first request of a session from the logs and sizes each part of it. This is one of my sessions in the Claude desktop app on Nov 19, before I typed a word of real work:
+
+| Part | Characters | Share | Tokens (estimated) |
+|---|---|---|---|
+| Tool definitions (53 tools) | 137,130 | 54% | 48,600 |
+| System prompt | 36,544 | 14% | 13,000 |
+| Skills list (97 skills) | 29,705 | 12% | 10,500 |
+| First message and other context | 12,655 | 5% | 4,500 |
+| Names of tools loaded on demand (268) | 11,309 | 4% | 4,000 |
+| MCP server instructions | 10,198 | 4% | 3,600 |
+| Hook output | 5,228 | 2% | 1,900 |
+| Instruction files (`CLAUDE.md`) | 4,915 | 2% | 1,700 |
+| Subagent types list | 4,502 | 2% | 1,600 |
+| **Total** | 252,186 | 100% | **89,428 (measured)** |
+
+Characters are measured. The total of 89,428 tokens is measured. Tokens per part are estimated: the measured total is shared out by characters.
+
+What stands out:
+
+- **Tool definitions are over half.** One built-in tool for publishing pages is 37,384 characters, about 13,000 tokens. The 19 tools of the built-in browser are another 22,433 characters.
+- **My own instructions are small.** `CLAUDE.md` is 2% of the startup prompt. Trimming it would save almost nothing.
+- **40 skills I installed for one project load in every project.** They sit in my personal skills folder and take 14,023 characters, about 5,000 tokens, in every session.
+- **Connectors cost tokens even when unused.** One data connector I rarely use adds 67 tool names and its instructions: 6,712 characters, about 2,400 tokens.
+
+Run it on your own most recent session:
+
+```
+python audit_startup.py
+```
+
+### First trim, measured
+
+Skills in `~/.claude/skills/` load in all projects. Skills in `.claude/skills/` inside a project load only there ([skills docs](https://code.claude.com/docs/en/skills.md)). I moved the 40 one-project skills into that project and audited a new session in this folder:
+
+| | Before | After |
+|---|---|---|
+| Skills in the list | 97 | 57 |
+| Skills listed by name only, no description | 28 | 0 |
+| Skills list, characters | 29,705 | 25,520 |
+
+All three rows are measured.
+
+- **The saving is smaller than I expected.** The 40 skills took 14,023 characters, but the list shrank by only 4,185, about 1,500 tokens (estimated).
+- **The reason is a size budget.** Claude Code caps the skills list. With 97 skills mine was at the cap, so 28 skills were cut down to a bare name. With 40 gone, the freed room went back to those 28 descriptions.
+- **The real gain is quality, not size.** Claude can now read what every installed skill is for. Before, it could not for 28 of them.
+
+The first prompt of the test session was 85,156 tokens against 89,428 (both measured). Most of that drop is my shorter first message, not the trim, so I do not count it as a saving.
+
+### Second trim, measured: a deny rule removes a tool, after a restart
+
+A deny rule with a bare tool name removes that tool from the prompt ([permissions docs](https://code.claude.com/docs/en/permissions.md)). I put this in `.claude/settings.local.json` inside one project, so it applies only there:
+
+```json
+{
+  "permissions": {
+    "deny": ["Artifact"]
+  }
+}
+```
+
+`Artifact` is the 37,384-character publishing tool from the table above. For the test I also denied a second, smaller tool as a control.
+
+| Request | Tools sent | Tool definitions, characters |
+|---|---|---|
+| New session, app not restarted | both tools still there | unchanged |
+| Same project, after restarting the app | both tools gone, nothing else changed | 145,037 → 102,875 |
+
+Both rows are measured from the logged requests.
+
+- **A brand-new settings file needed an app restart.** A new session alone did not pick it up in the desktop app. Once the file was loaded, a later edit to it took effect in the running session: when I removed the control rule, that tool came back without a restart.
+- **Denying the one tool removes 37,384 characters**, about 13,000 tokens (estimated) from every request in that project.
+- **The cost:** Claude cannot publish pages from that project while the rule is on. Only deny tools you do not use there.
+
+The second row comes from a session I resumed after the restart, not a brand-new one. The tool list is what was sent, so the character numbers hold, but I have not yet measured the token total of a new session with the rule on.
+
+### Not tried yet
+
+- An MCP server added at local scope loads only in that project ([MCP docs](https://code.claude.com/docs/en/mcp.md)).
+- The skills docs describe a setting for the size budget of the skills list.
+
+Limits of the audit:
+
+- It is one session. My first prompts range from 73k to 95k tokens (measured, 83 sessions in November).
+- Sharing tokens out by characters assumes every part has the same characters per token. Tool definitions are JSON and prose is not, so the per-part numbers can be off.
+- All my sessions run in the desktop app. A terminal session loads fewer tools and will look different.
+- It needs a recent Claude Code version. Older logs do not record the request.
+
 ## Run it on your own logs
 
 You need Python 3.9 or newer. No packages to install.
@@ -114,6 +203,10 @@ You need Python 3.9 or newer. No packages to install.
    ```
    python analyze_usage.py
    ```
+5. Optional: see what fills a new session. This reads the logs directly, so it works without step 2:
+   ```
+   python audit_startup.py
+   ```
 
 Useful options:
 
@@ -122,6 +215,7 @@ python simulate.py --cap 250 200            # try other caps, in thousands of to
 python simulate.py --trim-startup 30        # also try a 30k smaller startup prompt
 python simulate.py --since 2026-11-12       # only the last week
 python analyze_usage.py --split 2026-11-16  # cost per call before and from a date
+python audit_startup.py path/to/session.jsonl  # audit one chosen session
 ```
 
 **Privacy:** everything stays on your machine. The extract step writes three files into **data/**, which is git-ignored because it holds the first 200 to 300 characters of your prompts.
@@ -152,7 +246,7 @@ Limits:
 python test_simulate.py
 ```
 
-It runs the price function, the simulator and the before and after helpers on hand-made calls with known answers, and prints `ok`.
+It runs the price function, the simulator, the before and after helpers and the startup audit on hand-made inputs with known answers, and prints `ok`.
 
 ## Files
 
@@ -160,13 +254,14 @@ It runs the price function, the simulator and the before and after helpers on ha
 - **prices.py** holds the price table and the function that turns tokens into dollars.
 - **analyze_usage.py** prints the baseline report and, with `--split`, the before and after comparison.
 - **simulate.py** runs the what-if comparison.
-- **test_simulate.py** checks the three files above.
+- **audit_startup.py** sizes each part of a session's first prompt.
+- **test_simulate.py** checks **prices.py**, **analyze_usage.py**, **simulate.py** and **audit_startup.py**.
 
 ## Next
 
 Not built yet:
 
-- An audit of the startup prompt: what makes up the 85k tokens a new session begins with, and what can be removed.
+- More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
 - A `/delegate` command that hands one focused job to a subagent on a chosen model with a short brief, so the main chat never has to switch models.
 - A short guide for picking the model and effort for a task.
 - A longer before and after comparison once these are in daily use. The one above covers four days.

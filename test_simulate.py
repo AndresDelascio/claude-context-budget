@@ -1,7 +1,9 @@
 """Checks for prices.py and simulate.py on hand-made calls. Run:  python test_simulate.py"""
+import json
 from math import isclose
 
 from analyze_usage import compactions, per_call, price
+from audit_startup import first_request
 from prices import cost_parts
 from simulate import CARRY_TOKENS, call_cost, simulate
 
@@ -90,6 +92,27 @@ def test_compactions():
     # Prompt goes 100k -> 150k -> 60k: only the last step is a drop below 70%. ts gives the call order.
     rows = [dict(price(call(n)), ts=f"2026-01-01T00:0{i}") for i, n in enumerate((100_000, 150_000, 60_000))]
     assert [(a["cache_read"], b["cache_read"]) for a, b in compactions(rows)] == [(150_000, 60_000)]
+
+
+def test_first_request():
+    # A made-up session log: tool definitions and system prompt, one skills list, one message, then the first reply.
+    tools = [{"name": "Read"}, {"name": "mcp__maps__find"}, {"name": "mcp__maps__route"}]
+    log = [
+        {"type": "api-request-shape", "shape": {"system": [{"text": "s" * 100}], "tools": tools}},
+        {"type": "attachment", "attachment": {"type": "skill_listing", "content": "- cad-a: x\n- cad-b: y\n- kit:z"}},
+        {"type": "api-request-blob", "message": {"content": [{"type": "text", "text": "m" * 50}]}},
+        {"type": "assistant", "message": {"model": "m", "usage": {"input_tokens": 5, "cache_creation_input_tokens": 20, "cache_read_input_tokens": 75}}},
+    ]
+    parts, tokens, _ = first_request(json.dumps(d) for d in log)
+    size = {}
+    for group, member, chars in parts:
+        size[group, member] = size.get((group, member), 0) + chars
+    assert tokens == 100                                                   # 5 + 20 + 75
+    assert size["system prompt", ""] == 100
+    assert size["skills list", "cad-*"] == 16 and size["skills list", "kit:*"] == 5   # two cad skills share a row
+    assert size["tool definitions", "server maps"] == sum(len(json.dumps(t)) for t in tools[1:])
+    assert size["first message and other context", ""] == 50 - 21          # message text minus the skills list inside it
+    assert first_request(json.dumps(d) for d in log[1:]) is None           # no request record: nothing to size
 
 
 if __name__ == "__main__":

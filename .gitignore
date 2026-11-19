@@ -1,4 +1,6 @@
 # personal usage data and prompt text written by extract_usage.py
 data/
+# personal Claude Code settings for this folder (trim tests)
+.claude/settings.local.json
 __pycache__/
 *.pyc
