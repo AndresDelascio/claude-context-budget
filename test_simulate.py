@@ -1,6 +1,7 @@
 """Checks for prices.py and simulate.py on hand-made calls. Run:  python test_simulate.py"""
 from math import isclose
 
+from analyze_usage import compactions, per_call, price
 from prices import cost_parts
 from simulate import CARRY_TOKENS, call_cost, simulate
 
@@ -72,6 +73,23 @@ def test_subagent_reprice():
 
 def test_trim():
     assert simulate(ROWS, trim=10_000)[0] < BASE
+
+
+def test_per_call():
+    # Two Opus main calls with 100k and 300k of cached history, plus a subagent call that must be left out.
+    rows = [price(call(100_000, write=0)), price(call(300_000, write=0)), price(call(30_000, model=FABLE, subagent=1))]
+    opus = per_call(rows)
+    assert list(opus) == [OPUS] and opus[OPUS]["calls"] == 2
+    assert isclose(opus[OPUS]["read"], 0.04)        # mean of 100k and 300k tokens at $0.20 per million
+    assert isclose(opus[OPUS]["out"], 0.01)         # 500 output tokens at $20 per million
+    assert isclose(opus[OPUS]["usd"], 0.04 + 0.01 + 10 * 4e-6)  # plus 10 fresh input tokens at $4 per million
+    assert opus[OPUS]["prompt"] == 200_010          # median prompt, tokens
+
+
+def test_compactions():
+    # Prompt goes 100k -> 150k -> 60k: only the last step is a drop below 70%. ts gives the call order.
+    rows = [dict(price(call(n)), ts=f"2026-01-01T00:0{i}") for i, n in enumerate((100_000, 150_000, 60_000))]
+    assert [(a["cache_read"], b["cache_read"]) for a, b in compactions(rows)] == [(150_000, 60_000)]
 
 
 if __name__ == "__main__":
