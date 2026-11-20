@@ -3,6 +3,7 @@
 ## 2026-11-20
 - `analyze_usage.py --split` now also prints cost and calls per typed prompt, per model.
 - `simulate.py --without-top N` leaves out the N costliest sessions.
+- The repo map's result strip now shows the 26% figure without the longest session and all three models.
 - The README result table now shows all three models and the month without its largest session (26% saved, not 35%).
 
 ## 2026-11-19
