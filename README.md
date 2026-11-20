@@ -10,10 +10,15 @@ One month of my real usage, with and without the one setting this study points t
 |---|---|---|---|
 | The month, replayed by the simulator (estimated) | US$5,179 | US$3,356 | **US$1,823, or 35%** (27% to 38%) |
 | Same, plus subagents on Sonnet 5.5 (estimated) | US$5,179 | US$3,154 | **US$2,025, or 39%** |
-| Cost per call on Opus 5.5, real logs before and after (computed) | US$0.137 | US$0.075 | **45%** |
+| Same replay, leaving out the one session that was half the month (estimated) | US$2,567 | US$1,908 | **US$660, or 26%** (18% to 29%) |
+| Real logs, cost per call on Opus 5.5, before and after (computed) | US$0.137 | US$0.075 | **45%** |
+| Real logs, cost per call on Fable 5.2 (computed) | US$0.167 | US$0.155 | **7%** |
+| Real logs, cost per call on Sonnet 5.5 (computed) | US$0.036 | US$0.041 | **none: 14% more** |
 
 - "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices.
-- Rows 1 and 2 replay those same calls with the cap, so they rest on the simulator's stated assumptions. Row 3 is what really happened after I turned the setting on: four days of data, not a controlled test.
+- The first three rows replay those same calls with the cap, so they rest on the simulator's stated assumptions. One session was 50% of the month, so the third row shows the result without it.
+- The last three rows are what really happened after I turned the setting on: four days of data, not a controlled test. The cap helps where prompts were long. My Opus 5.5 prompts had a median of 370k tokens before, Fable 5.2 199k, and Sonnet 5.5 111k, which was already under the cap (measured).
+- Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work. A controlled test is the next step.
 - Dollars are list prices, not a bill. I am on a subscription, so for me the saving is usage, not money. I assume the usage limit counts tokens roughly the way the prices do, so read the same percentages as usage.
 
 ## The question
@@ -35,7 +40,7 @@ The answer was no. The model mattered less than **how long each session had grow
 | # | Finding | Evidence | Kind |
 |---|---|---|---|
 | 1 | Long sessions, not the model, drove the cost | 76% of spend was on calls with a prompt over 200k tokens. One session alone was 50% of the month | computed |
-| 2 | One built-in setting cut the cost per call almost in half | Opus 5.5 cost per call fell from US$0.137 to US$0.075 (-45%) after I capped the context at 200k | computed from measured tokens, not a controlled test |
+| 2 | One built-in setting cut the cost per call where sessions were long | After I capped the context at 200k, cost per call fell 45% on Opus 5.5 (US$0.137 to US$0.075) and 7% on Fable 5.2. Sonnet 5.5, already under the cap, rose 14% | computed from measured tokens, not a controlled test |
 | 3 | A new session is already large before you type | First prompt of 89,428 tokens. 54% is tool definitions. My own `CLAUDE.md` is 2% | total measured, shares estimated |
 | 4 | Subagents copy the main chat's model | The same small job cost US$0.15 on Sonnet 5.5 and US$0.60 on Fable 5.2 | computed from one measured run |
 | 5 | The cheapest model is not always cheap | Haiku 5.5 pays 5 times the price above 100k tokens. 96% of my calls were above that | price published, share measured |
@@ -97,7 +102,8 @@ python simulate.py --cap 250 200            # try other caps, in thousands of to
 python simulate.py --trim-startup 30        # also try a 30k smaller startup prompt
 python simulate.py --since 2026-11-12       # only calls from this date
 python simulate.py --sensitivity --cap 200  # how much the two assumed values matter
-python analyze_usage.py --split 2026-11-16  # cost per call before and from a date
+python simulate.py --without-top 1          # leave out your costliest session
+python analyze_usage.py --split 2026-11-16  # cost per call and per typed prompt, before and from a date
 python audit_startup.py path/to/session.jsonl  # audit one chosen session
 ```
 
@@ -127,7 +133,8 @@ It runs the price function, the simulator, the report helpers and the startup au
 
 - One person, one month, mostly long coding sessions in the Claude desktop app. Your mix will differ, which is why the tool runs on your logs.
 - Dollars are list prices times measured tokens, not a bill.
-- The before and after comparison is not a controlled test: the work differs, and the second period is four days.
+- The before and after comparison is not a controlled test: the work differs (a third as many calls per prompt), and the second period is four days.
+- One session was 50% of the month. Without it the simulated saving is 26%, not 35%.
 - The simulator assumes the same work after a checkpoint. It does not model answer quality. Its result moves from 38% to 27% as the assumed carry-over grows from 5,000 to 50,000 tokens.
 - `/delegate` has two measured runs, both small jobs.
 
@@ -149,6 +156,7 @@ It runs the price function, the simulator, the report helpers and the startup au
 
 - More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
 - More measured `/delegate` runs, on bulk reading jobs where it should pay.
+- A controlled test: the same scripted task run with the cap on and off, with the task's tests as the quality check.
 - A longer before and after comparison. The one here covers four days.
 
 ## About

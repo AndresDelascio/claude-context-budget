@@ -115,6 +115,8 @@ def main():
                     help="also try prompts this many thousand tokens smaller (leaner startup)")
     ap.add_argument("--since", default="", metavar="YYYY-MM-DD", help="only calls on or after this UTC date")
     ap.add_argument("--until", default="9", metavar="YYYY-MM-DD", help="only calls before this UTC date")
+    ap.add_argument("--without-top", type=int, default=0, metavar="N",
+                    help="leave out the N costliest sessions, to see how much the result depends on them")
     ap.add_argument("--sensitivity", action="store_true",
                     help="only print how the saving of each --cap moves with the two assumed checkpoint values")
     args = ap.parse_args()
@@ -122,6 +124,14 @@ def main():
     rows = [r for r in load() if args.since <= r["ts"] < args.until]  # ISO timestamps compare as text
     if not rows:
         raise SystemExit("no calls in that date range")
+    if args.without_top:
+        spend = {}
+        for r in rows:
+            spend[r["session"]] = spend.get(r["session"], 0) + r["w"]
+        top = set(sorted(spend, key=spend.get, reverse=True)[:args.without_top])
+        print(f"Left out the {len(top)} costliest session(s): ${sum(spend[s] for s in top):,.2f}, "
+              f"{100 * sum(spend[s] for s in top) / sum(spend.values()):.0f}% of the period (COMPUTED)")
+        rows = [r for r in rows if r["session"] not in top]
     if args.sensitivity:
         for c in args.cap:
             sensitivity(rows, c * 1000)

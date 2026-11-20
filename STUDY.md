@@ -50,6 +50,16 @@ I am on a subscription, so US$5,179 is not what I paid. It is what the same toke
 
 These are estimates, not measurements. They depend on the assumptions listed under [How the simulator works](#4-how-the-simulator-works). The 30k startup saving in the last row is assumed, not yet shown to be achievable.
 
+One session was 50% of the month, so I ran the same replay without it (`python simulate.py --cap 200 --without-top 1`):
+
+| Habit | Cost | Saved |
+|---|---|---|
+| As logged, without the costliest session | $2,567 | |
+| Start a new session past 200k tokens | $1,908 | 25.7% |
+| 200k cap + Sonnet subagents | $1,785 | 30.5% |
+
+Without that session the saving moves from 29% to 18% as the assumed carry-over grows from 5,000 to 50,000 tokens (estimated). So about a quarter, not a third, for a month without one very long session.
+
 Three results worth noting:
 
 1. **A checkpoint is not free.** A new session has to write its starting prompt to the cache again. That is why a 150k cap saves less than a 200k cap: it forces 1,211 restarts instead of 504.
@@ -88,6 +98,21 @@ The comparison is per call and per model because the two periods hold different 
 ```
 python analyze_usage.py --split 2026-11-16
 ```
+
+### Per typed prompt
+
+A cheaper call is no saving if the same request now takes more calls. So the same command also groups the calls by the prompt I typed: every call, main conversation or subagent, belongs to the last prompt typed before it in its session.
+
+| Model | Period | Typed prompts | Median US$ per prompt | Mean US$ per prompt | Calls per prompt |
+|---|---|---|---|---|---|
+| Opus 5.5 | before | 823 | 1.24 | 5.25 | 38.6 |
+| Opus 5.5 | from Nov 16 | 182 | 0.46 | 0.88 | 12.4 |
+| Fable 5.2 | before | 51 | 2.09 | 5.22 | 31.8 |
+| Fable 5.2 | from Nov 16 | 66 | 1.78 | 1.88 | 12.5 |
+
+Prompt and call counts are measured. Dollars are computed. Sonnet 5.5 had fewer than 20 typed prompts in a period and is left out.
+
+Cost per prompt fell more than cost per call. Most of that is not the cap: a prompt in the second period set off about a third as many calls, so the requests themselves were smaller. This table does not show the cap adding calls, and it does not show the cap saving money per task either. Only a controlled test, the same task with the cap on and off, can separate the two.
 
 Limits of this comparison:
 

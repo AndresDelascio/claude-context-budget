@@ -2,7 +2,7 @@
 import json
 from math import isclose
 
-from analyze_usage import compactions, per_call, price, reprice
+from analyze_usage import compactions, per_call, per_prompt, price, reprice
 from audit_startup import first_request
 from prices import cost_parts
 from simulate import CARRY_TOKENS, call_cost, simulate
@@ -100,6 +100,19 @@ def test_compactions():
     # Prompt goes 100k -> 150k -> 60k: only the last step is a drop below 70%. ts gives the call order.
     rows = [dict(price(call(n)), ts=f"2026-01-01T00:0{i}") for i, n in enumerate((100_000, 150_000, 60_000))]
     assert [(a["cache_read"], b["cache_read"]) for a, b in compactions(rows)] == [(150_000, 60_000)]
+
+
+def test_per_prompt():
+    # Session s1: prompt at minute 1, then a main call and a subagent call; prompt at minute 5, then one main call.
+    # A call at minute 0 has no prompt before it and is left out. Session s2 has a call but no typed prompt.
+    def at(minute, **kw):
+        return dict(price(call(100_000, write=0, **kw)), ts=f"2026-01-01T00:0{minute}")
+    rows = [at(0), at(2), at(3, model=FABLE, subagent=1), at(6), at(2, session="s2")]
+    turns = [{"ts": "2026-01-01T00:01", "session": "s1"}, {"ts": "2026-01-01T00:05", "session": "s1"}]
+    first, second = sorted(per_prompt(rows, turns), key=lambda p: p["ts"])
+    assert (first["calls"], second["calls"]) == (2, 1)
+    assert first["model"] == second["model"] == OPUS            # the subagent's model does not name the prompt
+    assert isclose(first["usd"], rows[1]["w"] + rows[2]["w"]) and isclose(second["usd"], rows[3]["w"])
 
 
 def test_first_request():

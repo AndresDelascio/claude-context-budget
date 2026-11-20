@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-20
+- `analyze_usage.py --split` now also prints cost and calls per typed prompt, per model.
+- `simulate.py --without-top N` leaves out the N costliest sessions.
+- The README result table now shows all three models and the month without its largest session (26% saved, not 35%).
+
 ## 2026-11-19
 - The repo map (**how_it_works.png**, **how_it_works.pdf**) now shows the headline result: the month with and without a 200k context cap.
 - Added the usage extractor, the baseline report and the what-if simulator.
