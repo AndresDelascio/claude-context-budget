@@ -2,6 +2,20 @@
 
 A study of where my Claude Code tokens went over one month, and the small Python tool that measured it, which you can run on your own logs.
 
+## The result
+
+One month of my real usage, with and without the one setting this study points to (a 200k cap on the context):
+
+| | Without | With | Saved |
+|---|---|---|---|
+| The month, replayed by the simulator (estimated) | US$5,179 | US$3,356 | **US$1,823, or 35%** (27% to 38%) |
+| Same, plus subagents on Sonnet 5.5 (estimated) | US$5,179 | US$3,154 | **US$2,025, or 39%** |
+| Cost per call on Opus 5.5, real logs before and after (computed) | US$0.137 | US$0.075 | **45%** |
+
+- "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices.
+- Rows 1 and 2 replay those same calls with the cap, so they rest on the simulator's stated assumptions. Row 3 is what really happened after I turned the setting on: four days of data, not a controlled test.
+- Dollars are list prices, not a bill. I am on a subscription, so for me the saving is usage, not money. I assume the usage limit counts tokens roughly the way the prices do, so read the same percentages as usage.
+
 ## The question
 
 My usage limit kept running out. The usual advice is "pick a cheaper model". I wanted to know if that was really the problem, so I read my own logs: 39,275 API calls in 90 sessions, Oct 19 to Nov 19, 2026.

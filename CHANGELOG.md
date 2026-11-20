@@ -17,3 +17,4 @@
 - Dropped the planned cap warning: Claude Code's `autoCompactWindow` setting already does it.
 - Added **how_it_works.pdf**: a one-page map of how the scripts fit together, made from **how_it_works.html**.
 - README: the map is now on the front page as **how_it_works.png**.
+- README: a result table at the top, the month with and without the 200k cap, in dollars and percent.
