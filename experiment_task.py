@@ -2,6 +2,7 @@
 
 The task is a small feature project on click 8.1.7 (a command-line library, about 10,000 lines of source).
 Run inside a finished workspace to score it:  python experiment_task.py   (with PYTHONPATH=src)
+Add --long to score the 35-prompt task that the context-cap test uses.
 """
 import sys
 
@@ -62,6 +63,81 @@ PROMPTS = [
 
     "click.Command already has its own `deprecated` argument. Compare how it behaves with your Option "
     "`deprecated` argument and list the differences a user would notice, in at most 8 lines. No code changes.",
+
+    "Run the full test suite. Fix any test that fails because of your changes. Then list every file you "
+    "changed, one line each.",
+]
+
+# The long task: the 15 prompts above, then 20 more. It exists to push the conversation past 200,000 tokens,
+# so the context cap can be tested (arms E and F in experiment.py). The "read ... from the first line to the
+# last" prompts are reviews, the kind of step that fills a real session with file contents.
+LONG_PROMPTS = PROMPTS + [
+    "Read src/click/core.py from the first line to the last (the whole file, not a search). Check that your "
+    "Option `deprecated` handling is consistent with how `hidden` is handled everywhere in that file. "
+    "Report in at most 8 lines and fix any gap you find.",
+
+    "A deprecated option must not be required: constructing a click.Option with both `required=True` and "
+    "a truthy `deprecated` raises ValueError. Add a test.",
+
+    "Add a percentage parameter type: class `PercentParamType` in src/click/types.py with name \"percent\", "
+    "an instance exported as `click.PERCENT`, and the class exported as `click.PercentParamType`. It accepts "
+    "a number from 0 to 100 with an optional trailing '%' and returns it as a float fraction (\"50%\" gives "
+    "0.5, \"12.5\" gives 0.125). Anything else fails with the message `'<value>' is not a valid percentage.` "
+    "Add tests.",
+
+    "Read src/click/types.py from the first line to the last. Do your new types follow the conventions of "
+    "the existing ones (name, repr, to_info_dict, how errors are raised)? Report in at most 8 lines and fix "
+    "any difference.",
+
+    "Add a read-only property `stderr_lines` to click.testing.Result, the same as `output_lines` but for "
+    "`stderr`. Add a test.",
+
+    "Read src/click/parser.py from the first line to the last. In at most 10 lines, explain how "
+    "`--name=value`, `--name value` and `-abc` (combined short flags) are each parsed. No code changes.",
+
+    "Let click.Command's `deprecated` argument also accept a string, like your Option argument. With "
+    "`deprecated=\"use new\"` the help text shows `(Deprecated: use new)` where it showed `(Deprecated)`, and "
+    "the warning is `DeprecationWarning: The command '<name>' is deprecated. use new`. `deprecated=True` "
+    "keeps working as before. Add tests.",
+
+    "Read tests/test_options.py and tests/test_types.py from the first line to the last. Are the tests you "
+    "added placed and written like their neighbours? Report in at most 8 lines and fix what is not.",
+
+    "The Option deprecation warning must also be printed when the option's value comes from an environment "
+    "variable, and still not when it comes from a default. Add tests.",
+
+    "Read src/click/shell_completion.py from the first line to the last. In at most 10 lines, explain how "
+    "completions for an option's value (not its name) are produced. No code changes.",
+
+    "Include `sort_commands` in the Group's to_info_dict. Add a test.",
+
+    "Read src/click/testing.py from the first line to the last. In at most 10 lines, explain how CliRunner "
+    "captures stdout and stderr and what `mix_stderr` changes. No code changes.",
+
+    "Add a host name parameter type, following exactly the conventions you used for the email and port "
+    "types (class name, `name`, exports, error message wording, tests). A value is valid when it is one or "
+    "more labels separated by '.', each label made of letters, digits and hyphens, not empty, and not "
+    "starting or ending with a hyphen. A valid value is returned unchanged.",
+
+    "Read docs/options.rst from the first line to the last, then add a section to it on deprecated options, "
+    "written like the sections around it, with one example.",
+
+    "Read src/click/termui.py from the first line to the last. In at most 10 lines, say which functions "
+    "decide whether colour codes are kept or stripped, and how. No code changes.",
+
+    "Document the percent and host types in docs/api.rst next to the other types, and add everything you "
+    "have added since the last CHANGES.rst edit to its 'Unreleased' section.",
+
+    "Write a file NOTES.md in the repo root that lists every public name and every keyword argument you "
+    "have added to click in this conversation, one per line, each with its exact error or warning message "
+    "if it has one.",
+
+    "Read src/click/decorators.py from the first line to the last. In at most 8 lines, explain how the "
+    "keyword arguments of `@click.option` reach `Option.__init__`, and whether your `deprecated` argument "
+    "needed any change there. No code changes.",
+
+    "Run `git diff` and read all of it. List anything that is inconsistent between the features you added "
+    "(naming, messages, tests, docs), in at most 10 lines, and fix it.",
 
     "Run the full test suite. Fix any test that fails because of your changes. Then list every file you "
     "changed, one line each.",
@@ -158,8 +234,90 @@ def checks():
         lambda: any(word in open("CHANGES.rst", encoding="utf-8").read() for word in ("PortParamType", "click.PORT", "PORT``")))
 
 
+def long_checks():
+    """The checks above, plus the requirements of the 20 extra prompts in LONG_PROMPTS."""
+    import click
+    from click.testing import CliRunner
+
+    yield from checks()
+
+    def ok(fn):
+        try:
+            return bool(fn())
+        except Exception:
+            return False
+
+    def raises(fn, error, text=""):
+        try:
+            fn()
+        except error as e:
+            return text in (e.format_message() if isinstance(e, click.ClickException) else str(e))
+        return False
+
+    def text(name):
+        return open(name, encoding="utf-8").read()
+
+    def percent(value):
+        return click.PERCENT.convert(value, None, None)
+
+    def host(value):  # the prompt does not fix the name, so HOST and HOSTNAME both count
+        return (getattr(click, "HOST", None) or click.HOSTNAME).convert(value, None, None)
+
+    run = CliRunner(mix_stderr=False).invoke
+    yield "deprecated and required together raise ValueError", ok(lambda: raises(
+        lambda: click.Option(["--x"], required=True, deprecated=True), ValueError))
+
+    yield "PERCENT converts to a fraction", ok(
+        lambda: (percent("50%"), percent("12.5"), percent("100")) == (0.5, 0.125, 1.0) and click.PercentParamType.name == "percent")
+    yield "PERCENT rejects bad values", ok(
+        lambda: all(raises(lambda: percent(v), click.BadParameter, "is not a valid percentage") for v in ("101", "-1", "abc", "%")))
+
+    @click.command()
+    def errs():
+        click.echo("e1", err=True)
+        click.echo("e2", err=True)
+
+    yield "Result.stderr_lines", ok(lambda: run(errs).stderr_lines == ["e1", "e2"])
+
+    def old(deprecated):
+        return click.Command("old", callback=lambda: None, help="Do it.", deprecated=deprecated)
+
+    yield "deprecated command message: in the warning", ok(
+        lambda: "DeprecationWarning: The command 'old' is deprecated. use new" in run(old("use new"), []).stderr)
+    yield "deprecated command message: in help", ok(
+        lambda: "(Deprecated: use new)" in run(old("use new"), ["--help"]).output and "(Deprecated)" in run(old(True), ["--help"]).output)
+
+    def from_env():
+        @click.command()
+        @click.option("--old", envvar="OLD_WAY", deprecated=True)
+        def cmd(old):
+            pass
+        return cmd
+
+    yield "deprecated option: warns when set by an environment variable", ok(
+        lambda: "is deprecated" in run(from_env(), [], env={"OLD_WAY": "1"}).stderr and "Deprecat" not in run(from_env(), []).stderr)
+
+    def info():
+        g = click.Group("g", sort_commands=False)
+        return g.to_info_dict(click.Context(g))
+
+    yield "sort_commands is in the Group's to_info_dict", ok(lambda: info()["sort_commands"] is False)
+
+    yield "HOST accepts valid names", ok(
+        lambda: host("api.example-1.com") == "api.example-1.com" and host("localhost") == "localhost")
+    yield "HOST rejects bad names, message worded like the other types", ok(
+        lambda: all(raises(lambda: host(v), click.BadParameter, "is not a valid host") for v in ("a..b", "a b.com", "-a.com", "a_b.com")))
+
+    yield "docs/options.rst covers deprecated options", ok(lambda: "deprecated" in text("docs/options.rst").lower())
+    yield "docs/api.rst lists PERCENT and HOST", ok(lambda: all(w in text("docs/api.rst") for w in ("PERCENT", "HOST")))
+    yield "CHANGES.rst mentions the later additions", ok(
+        lambda: all(w in text("CHANGES.rst").lower() for w in ("percent", "host", "stderr_lines")))
+    yield "NOTES.md lists what was added", ok(
+        lambda: all(w in text("NOTES.md") for w in ("EMAIL", "PORT", "PERCENT", "HOST", "output_lines", "stderr_lines", "sort_commands", "deprecated")))
+
+
 if __name__ == "__main__":
-    results = list(checks())
+    results = list(long_checks() if "--long" in sys.argv else checks())
     for name, passed in results:
         if not passed:
             print("FAILED:", name, file=sys.stderr)

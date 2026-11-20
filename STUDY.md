@@ -2,7 +2,7 @@
 
 This is the full write-up behind the [README](README.md). Each section gives the numbers, how they were produced, and their limits.
 
-Data: one month of my own Claude Code logs, Oct 19 to Nov 19, 2026, 39,275 API calls, 90 sessions. Section 8 is separate: a controlled test of 12 scripted runs.
+Data: one month of my own Claude Code logs, Oct 19 to Nov 19, 2026, 39,275 API calls, 90 sessions. Sections 8 and 9 are separate: controlled tests of 18 scripted runs.
 
 Three kinds of number appear, and each one is labelled:
 
@@ -20,6 +20,7 @@ Contents:
 6. [Delegate a job to a cheaper model](#6-delegate-a-job-to-a-cheaper-model)
 7. [The same calls on each model](#7-the-same-calls-on-each-model)
 8. [Controlled test: project file, code map, handoff](#8-controlled-test-project-file-code-map-handoff)
+9. [Controlled test: the 200k cap](#9-controlled-test-the-200k-cap)
 
 ## 1. Baseline
 
@@ -374,7 +375,7 @@ What the 12 runs show:
 
 Limits:
 
-- One small, well-known repo, one model, and a task that stayed under 110,000 tokens of context. My logs put 76% of the spend above 200,000 tokens, and this test does not reach that range. It does not test the 200k cap.
+- One small, well-known repo, one model, and a task that stayed under 110,000 tokens of context. My logs put 76% of the spend above 200,000 tokens, and this test does not reach that range. It does not test the 200k cap; section 9 does.
 - Three runs per arm. A difference smaller than the run-to-run spread would not show.
 - All 18 checks passed everywhere, so the checks could not show a quality difference if there was one.
 - The harness sends each prompt as a new `claude -p --resume` process. That re-writes about 9,000 tokens to the cache per prompt (measured once), which a live session would not do. It is the same in every arm.
@@ -388,3 +389,59 @@ python experiment.py --runs 3     # three runs per arm
 ```
 
 It needs the `claude` CLI logged in, git, and `graphify` on your PATH for arm C. Raw records go to **data/experiment/**, which is git-ignored.
+
+## 9. Controlled test: the 200k cap
+
+Section 8 stayed under 110,000 tokens, so it could not test the cap. This section uses a longer task that passes 200,000 tokens, run with the cap off and on.
+
+| Arm | Set-up |
+|---|---|
+| E | The long task, no cap |
+| F | The long task, with `autoCompactWindow` set to 200,000 |
+
+The long task is the 15 prompts of section 8 plus 20 more, 35 in all, in one conversation on the same repo and model (click 8.1.7, Sonnet 5.5). Eight of the new prompts are reviews that read a whole file, which is what fills a real session. The others add features that build on the earlier ones. Quality is checked with 32 checks; the untouched repo passes 1. Each arm ran 3 times.
+
+| Arm | Run 1 | Run 2 | Run 3 | Median US$ | Median API calls | Median prompt tokens | Largest prompt (tokens) | Compactions per run | Checks passed |
+|---|---|---|---|---|---|---|---|---|---|
+| E, no cap | 3.91 | 3.26 | 3.25 | 3.26 | 122 | 15.5 million | 308,186 | 0 | 32/32, 3 times |
+| F, 200k cap | 3.39 | 3.57 | 3.25 | 3.39 | 155 | 12.0 million | 168,886 | 2 | 32/32, 3 times |
+
+Tokens are measured from the session transcripts. Dollars are the cost Claude Code itself reported. For arm E that equals my own sum at list prices. For arm F it is about US$0.22 higher per run, because the calls that write the summary are billed but are not in the transcript. The six runs used US$20.63.
+
+Where the money went, mean of 3 runs (computed from measured tokens at Sonnet 5.5 list prices):
+
+| Part | E, no cap | F, 200k cap |
+|---|---|---|
+| Reading the cached conversation | US$1.65 | US$1.12 |
+| Writing to the cache | US$1.14 | US$1.34 |
+| Output | US$0.69 | US$0.72 |
+| Writing the summaries (billed, not in the transcript) | US$0.00 | US$0.22 |
+| Total | US$3.48 | US$3.40 |
+
+What the 6 runs show:
+
+- **The cap did what it should to the tokens.** The model re-read 22% fewer prompt tokens (median 12.0 against 15.5 million), and no call went over 169,000 tokens. Without the cap, about a third of the calls were over 200,000.
+- **It saved no money on this task.** Median US$3.39 with the cap against US$3.26 without. The runs overlap (F: US$3.25 to US$3.57, E: US$3.25 to US$3.91), so the honest reading is "no difference", not "4% more".
+- **The saving on reading was spent on compacting.** Reading fell by US$0.53 a run. Writing the summaries, re-writing the cache after each one, and about 30 extra API calls took almost all of it back.
+- **Quality was the same.** All 6 runs passed all 32 checks, with two compactions in every capped run. Click's suite showed the same single Windows-only failure as in section 8.
+
+How this fits the rest of the study:
+
+- The simulator in section 2 gives 35% for my month, where sessions ran far past 200,000 tokens for hundreds of calls. This task passed 200,000 only in its last third and stopped near 300,000. A compaction has a fixed price, and here there were too few calls after it to pay it back. The same effect is in **test_simulate.py** (`test_checkpoints_have_a_price`).
+- It agrees with section 3: after I turned the cap on, cost per call fell on the models whose prompts were long and rose 14% on Sonnet 5.5, whose prompts were short.
+- So the controlled test supports the direction of the simulator (fewer tokens read, a price per compaction), but it does not confirm the 35%. That figure stays an estimate for long sessions.
+
+Limits:
+
+- One repo, one model, three runs per arm, and a task that ends near 300,000 tokens. It does not show what the cap does at 500,000 or more, which is where most of my spend was.
+- All 32 checks passed everywhere, so they could not show a quality loss if there was one. The model can also re-read files after a compaction, which hides what it forgot.
+- The harness sends each prompt as a new `claude -p --resume` process, which re-writes about 9,000 tokens to the cache per prompt (measured once, in section 8). That raises the "writing to the cache" row in both arms.
+- The two arms of a round ran at the same time, so they may share cached prompt parts.
+- One check was corrected after the first round. The prompt asks for a host name type without naming it, both runs named it `HOSTNAME`, and the check only accepted `HOST`. It now accepts either. The prompts did not change.
+- The cap setting only accepts 100,000 to 1,000,000 tokens. A lower value is ignored (measured with 40,000: no compaction).
+
+Run it yourself:
+
+```
+python experiment.py --runs 3 --arms EF
+```

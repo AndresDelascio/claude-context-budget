@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-11-20
+- Added a controlled test of the 200k cap: a 35-prompt task (`LONG_PROMPTS`, 32 checks) and arms E and F in `experiment.py`. STUDY.md section 9 has the 6 runs: 22% fewer prompt tokens with the cap, no saving in dollars, same quality.
+- README: a seventh finding and a result row from that test. The 35% is now stated as an estimate for long sessions.
+- `experiment.py` reports the CLI's own cost in its medians and counts compactions.
 - Added `experiment.py` and `experiment_task.py`: a controlled test of a project file, a code map and a mid-task handoff on the same scripted task. STUDY.md section 8 has the 12 runs: no measurable saving from the file or the map, and the handoff cost more.
 - README: a sixth finding from that test.
 - `analyze_usage.py --split` now also prints cost and calls per typed prompt, per model.

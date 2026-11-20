@@ -14,11 +14,13 @@ One month of my real usage, with and without the one setting this study points t
 | Real logs, cost per call on Opus 5.5, before and after (computed) | US$0.137 | US$0.075 | **45%** |
 | Real logs, cost per call on Fable 5.2 (computed) | US$0.167 | US$0.155 | **7%** |
 | Real logs, cost per call on Sonnet 5.5 (computed) | US$0.036 | US$0.041 | **none: 14% more** |
+| Controlled test, one 35-prompt task on Sonnet 5.5 that ends near 300k tokens (median of 3 runs) | US$3.26 | US$3.39 | **none** (runs overlap) |
 
 - "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices.
 - The first three rows replay those same calls with the cap, so they rest on the simulator's stated assumptions. One session was 50% of the month, so the third row shows the result without it.
 - The last three rows are what really happened after I turned the setting on: four days of data, not a controlled test. The cap helps where prompts were long. My Opus 5.5 prompts had a median of 370k tokens before, Fable 5.2 199k, and Sonnet 5.5 111k, which was already under the cap (measured).
-- Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work. A controlled test of the cap is the next step.
+- Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work.
+- The last row is a controlled test: the same scripted task with the cap off and on. The cap cut the tokens re-read by 22%, but on a task that only just passes 200k the two compactions cost as much as they saved. So the 35% is an estimate for long sessions like mine, not a promise for every task.
 - Dollars are list prices, not a bill. I am on a subscription, so for me the saving is usage, not money. I assume the usage limit counts tokens roughly the way the prices do, so read the same percentages as usage.
 
 ## The question
@@ -35,7 +37,7 @@ The answer was no. The model mattered less than **how long each session had grow
 - **Computed:** measured tokens times API list prices. I am on a subscription, so this is not what I paid. It makes sessions and models comparable.
 - **Estimated:** simulator results and per-part token counts, which rest on stated assumptions.
 
-## Six findings
+## Seven findings
 
 | # | Finding | Evidence | Kind |
 |---|---|---|---|
@@ -45,6 +47,7 @@ The answer was no. The model mattered less than **how long each session had grow
 | 4 | Subagents copy the main chat's model | The same small job cost US$0.15 on Sonnet 5.5 and US$0.60 on Fable 5.2 | computed from one measured run |
 | 5 | The cheapest model is not always cheap | Haiku 5.5 pays 5 times the price above 100k tokens. 96% of my calls were above that | price published, share measured |
 | 6 | On a small task, a project file or a code map saved nothing | Same 15-prompt task, 3 runs each: US$0.86 with nothing, US$0.93 with a `CLAUDE.md`, US$0.89 with a code map too. All passed the same 18 checks | controlled test, tokens measured, medians |
+| 7 | On a task that only just passes 200k, the cap saved tokens but not money | Same 35-prompt task, 3 runs each: US$3.26 without the cap, US$3.39 with it. 22% fewer prompt tokens, two compactions per run, all 32 checks passed both ways | controlled test, tokens measured, medians |
 
 Two results surprised me:
 
@@ -141,7 +144,7 @@ It runs the price function, the simulator, the report helpers, the startup audit
 - One session was 50% of the month. Without it the simulated saving is 26%, not 35%.
 - The simulator assumes the same work after a checkpoint. It does not model answer quality. Its result moves from 38% to 27% as the assumed carry-over grows from 5,000 to 50,000 tokens.
 - `/delegate` has two measured runs, both small jobs.
-- The controlled test is one small repo, one model and three runs per set-up. Its context stayed under 110,000 tokens, so it does not test the 200k cap.
+- The controlled tests are one small repo, one model and three runs per set-up. The cap test ends near 300,000 tokens, so it does not show what the cap does in the much longer sessions where most of my spend was.
 
 ## Files
 
@@ -162,7 +165,7 @@ It runs the price function, the simulator, the report helpers, the startup audit
 
 - More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
 - More measured `/delegate` runs, on bulk reading jobs where it should pay.
-- The controlled test again with a task long enough to pass 200k tokens, with the cap on and off. The harness is ready; the task is not.
+- The cap test on a task that runs to 500k tokens or more, and on Opus 5.5, to find where the cap starts to pay.
 - The code map on a larger repo, where grep is not enough.
 - A longer before and after comparison. The one here covers four days.
 
