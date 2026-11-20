@@ -52,7 +52,7 @@ python analyze_usage.py
 
 ## Four ways the bill grows without you noticing
 
-1. **A long chat on an expensive model.** Every call re-reads the whole conversation. 76% of my spend was on main-chat calls with a prompt above 200,000 tokens (computed). Fix: a new session per task, and the `autoCompactWindow` setting (see the README, "Measured before and after").
+1. **A long chat on an expensive model.** Every call re-reads the whole conversation. 76% of my spend was on main-chat calls with a prompt above 200,000 tokens (computed). Fix: a new session per task, and the `autoCompactWindow` setting (see **STUDY.md**, section 3).
 2. **Subagents that copy the main model.** A subagent started from a Fable 5.2 chat runs on Fable 5.2 unless told otherwise. One small job cost US$0.15 on Sonnet 5.5 against US$0.60 on Fable 5.2 (computed from one measured run). Fix: the `/delegate` skill in this repo, or the settings below.
 3. **Tiny jobs sent to a subagent.** A subagent's first prompt was about 48,000 tokens before it read anything (measured, two runs). Delegating pays for bulk reading. It does not pay for a one-line lookup.
 4. **Fast mode left on.** It doubles every price on the models that have it (list price, not measured here).

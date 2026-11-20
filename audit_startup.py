@@ -25,7 +25,7 @@ def source(name, builtin=None):
 
 
 def skill_group(name):
-    """'plugin:skill' -> 'plugin:*', 'roblox-ui' -> 'roblox-*', so a family of skills is one row."""
+    """'plugin:skill' -> 'plugin:*', 'cad-ui' -> 'cad-*', so a family of skills is one row."""
     return name.split(":")[0] + ":*" if ":" in name else name.split("-")[0] + "-*"
 
 
