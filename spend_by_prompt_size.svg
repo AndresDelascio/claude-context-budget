@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Share of main-conversation spend by prompt size: 50k to 100k tokens 2%, 100k to 200k 16%, 200k to 400k 23%, over 400k 59%">
+  <!-- Numbers: "main-thread spend by prompt size" in the output of analyze_usage.py (computed). Bar width = 8 px per 1%. -->
+  <!-- Mid-grey text reads on both light and dark GitHub themes. -->
+  <text x="0" y="22" font-size="16" font-weight="600" fill="#8b949e">Share of main-conversation spend by prompt size (computed)</text>
+  <g font-size="14" fill="#8b949e">
+    <text x="150" y="68" text-anchor="end">50k to 100k tokens</text>
+    <text x="150" y="112" text-anchor="end">100k to 200k</text>
+    <text x="150" y="156" text-anchor="end">200k to 400k</text>
+    <text x="150" y="200" text-anchor="end">over 400k</text>
+  </g>
+  <rect x="162" y="50" width="16" height="26" rx="3" fill="#8b949e"/>
+  <rect x="162" y="94" width="128" height="26" rx="3" fill="#8b949e"/>
+  <rect x="162" y="138" width="184" height="26" rx="3" fill="#d1242f"/>
+  <rect x="162" y="182" width="472" height="26" rx="3" fill="#d1242f"/>
+  <g font-size="14" font-weight="600" fill="#8b949e">
+    <text x="186" y="68">2%</text>
+    <text x="298" y="112">16%</text>
+    <text x="354" y="156">23%</text>
+    <text x="642" y="200">59%</text>
+  </g>
+  <text x="162" y="238" font-size="12" fill="#8b949e">Red: prompts over 200k tokens. 35,562 main-conversation calls, Oct 19 to Nov 19, 2026.</text>
+</svg>

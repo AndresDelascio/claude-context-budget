@@ -13,4 +13,5 @@
 - Added `python simulate.py --sensitivity`: the saving of a cap for a range of the two assumed checkpoint values. README has the table for the 200k cap.
 - README rewritten as the front page of the study (question, five findings, what to do, how to run it). The detailed sections moved unchanged into **STUDY.md**.
 - Added an MIT licence.
+- Added **spend_by_prompt_size.svg**, the chart on the front page.
 - Dropped the planned cap warning: Claude Code's `autoCompactWindow` setting already does it.

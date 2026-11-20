@@ -8,13 +8,7 @@ My usage limit kept running out. The usual advice is "pick a cheaper model". I w
 
 The answer was no. The model mattered less than **how long each session had grown**. Claude re-sends the whole conversation on every step, so a session at 400k tokens pays for those 400k tokens again on each tool call.
 
-```mermaid
-xychart-beta
-    title "Share of main-conversation spend by prompt size (computed)"
-    x-axis "Prompt size in tokens" ["50k to 100k", "100k to 200k", "200k to 400k", "over 400k"]
-    y-axis "Share of spend in %" 0 --> 60
-    bar [2, 16, 23, 59]
-```
+![Share of main-conversation spend by prompt size: 2% at 50k to 100k tokens, 16% at 100k to 200k, 23% at 200k to 400k, 59% over 400k](spend_by_prompt_size.svg)
 
 ## How to read the numbers
 
