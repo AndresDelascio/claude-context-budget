@@ -29,6 +29,11 @@
   .act .n { position: absolute; top: -11px; left: 10px; width: 22px; height: 22px; border-radius: 11px; background: #1f2328;
             color: #fff; font-weight: 650; text-align: center; line-height: 22px; }
   .act .t { margin-top: 5px; }
+  .res { background: #fff; border-color: #1f2328; font-size: 10.5px; color: #59636e; padding: 7px 12px; }
+  .res .cells { display: flex; gap: 18px; margin-bottom: 5px; }
+  .res .cells span { display: block; font-size: 10px; }
+  .res .cells b { font-size: 19px; font-weight: 650; color: #1f2328; }
+  .res .cells i { font-style: normal; font-size: 10.5px; }
   .foot { font-size: 11px; color: #59636e; }
   .foot b { color: #1f2328; }
   code { font: 11px Consolas, monospace; white-space: nowrap; }
@@ -37,7 +42,17 @@
 
 <div class="abs" style="left:40px; top:26px">
   <h1>How claude-context-budget works</h1>
-  <div class="sub">Claude Code logs every API call on your machine. Four small Python scripts read those logs and show where the tokens went.</div>
+  <div class="sub">Four small Python scripts read Claude Code's local logs and show where the tokens went.</div>
+</div>
+
+<!-- headline result: same figures as the README's result table -->
+<div class="box res" style="left:572px; top:16px; width:444px; height:78px">
+  <div class="cells">
+    <div><span>Month as logged</span><b>US$5,179</b></div>
+    <div><span>With a 200k context cap</span><b>US$3,356</b></div>
+    <div><span>Saved</span><b>35%</b> <i>27% to 38%</i></div>
+  </div>
+  <span class="pill e">estimated</span>replay of my month &nbsp;·&nbsp; <span class="pill c">computed</span>real logs: −45% per call on Opus 5.5
 </div>
 
 <div class="abs step" style="left:40px;  top:100px">1 · Your logs</div>
