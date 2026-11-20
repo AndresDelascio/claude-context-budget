@@ -1,6 +1,8 @@
 # Changelog
 
 ## 2026-11-20
+- Added `experiment.py` and `experiment_task.py`: a controlled test of a project file, a code map and a mid-task handoff on the same scripted task. STUDY.md section 8 has the 12 runs: no measurable saving from the file or the map, and the handoff cost more.
+- README: a sixth finding from that test.
 - `analyze_usage.py --split` now also prints cost and calls per typed prompt, per model.
 - `simulate.py --without-top N` leaves out the N costliest sessions.
 - The repo map's result strip now shows the 26% figure without the longest session and all three models.

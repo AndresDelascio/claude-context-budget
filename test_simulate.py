@@ -136,6 +136,15 @@ def test_first_request():
     assert first_request(json.dumps(d) for d in log[1:]) is None           # no request record: nothing to size
 
 
+def test_experiment_summarize():
+    # Two API calls, each: 10 fresh input tokens, 100k cached tokens read, 500 output tokens, on Sonnet 5.5.
+    from experiment import summarize
+    c = {"input_tokens": 10, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 100_000, "output_tokens": 500}
+    s = summarize([c, c], turns=[{}, {"is_error": True}])
+    assert isclose(s["usd"], 2 * (0.01 + 0.005 + 10 * 2e-6))  # same prices as test_reprice
+    assert (s["calls"], s["prompt_tokens"], s["max_prompt"], s["output_tokens"], s["errors"]) == (2, 200_020, 100_010, 1_000, 1)
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

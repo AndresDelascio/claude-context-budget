@@ -18,7 +18,7 @@ One month of my real usage, with and without the one setting this study points t
 - "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices.
 - The first three rows replay those same calls with the cap, so they rest on the simulator's stated assumptions. One session was 50% of the month, so the third row shows the result without it.
 - The last three rows are what really happened after I turned the setting on: four days of data, not a controlled test. The cap helps where prompts were long. My Opus 5.5 prompts had a median of 370k tokens before, Fable 5.2 199k, and Sonnet 5.5 111k, which was already under the cap (measured).
-- Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work. A controlled test is the next step.
+- Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work. A controlled test of the cap is the next step.
 - Dollars are list prices, not a bill. I am on a subscription, so for me the saving is usage, not money. I assume the usage limit counts tokens roughly the way the prices do, so read the same percentages as usage.
 
 ## The question
@@ -35,7 +35,7 @@ The answer was no. The model mattered less than **how long each session had grow
 - **Computed:** measured tokens times API list prices. I am on a subscription, so this is not what I paid. It makes sessions and models comparable.
 - **Estimated:** simulator results and per-part token counts, which rest on stated assumptions.
 
-## Five findings
+## Six findings
 
 | # | Finding | Evidence | Kind |
 |---|---|---|---|
@@ -44,11 +44,13 @@ The answer was no. The model mattered less than **how long each session had grow
 | 3 | A new session is already large before you type | First prompt of 89,428 tokens. 54% is tool definitions. My own `CLAUDE.md` is 2% | total measured, shares estimated |
 | 4 | Subagents copy the main chat's model | The same small job cost US$0.15 on Sonnet 5.5 and US$0.60 on Fable 5.2 | computed from one measured run |
 | 5 | The cheapest model is not always cheap | Haiku 5.5 pays 5 times the price above 100k tokens. 96% of my calls were above that | price published, share measured |
+| 6 | On a small task, a project file or a code map saved nothing | Same 15-prompt task, 3 runs each: US$0.86 with nothing, US$0.93 with a `CLAUDE.md`, US$0.89 with a code map too. All passed the same 18 checks | controlled test, tokens measured, medians |
 
 Two results surprised me:
 
 - **A tighter cap is not better.** A 150k cap saves less than a 200k cap (30.6% against 35.2%, estimated), because every fresh session has to write its starting prompt to the cache again.
 - **Delegating a tiny job loses money.** A subagent starts at about 48,000 tokens before it reads anything (measured, two runs).
+- **The model ignored the code map.** In the controlled test it never opened the map, though the project file told it to. A handoff to a fresh session halfway cost more, not less (US$1.11), because the context was still small.
 
 The full method, tables and limits are in **[STUDY.md](STUDY.md)**.
 
@@ -66,6 +68,8 @@ In order of effect on my usage:
 | 6. Pick the model on purpose | **[GUIDE.md](GUIDE.md)**, one page | The same month costs US$2,509 on Sonnet 5.5 and US$7,131 on Fable 5.2 (computed, assumes equal tokens) |
 
 I use steps 1, 3 and 4 every day.
+
+Not on this list: writing a project file or building a code map to save tokens. On a small task neither changed the cost (finding 6). A short `CLAUDE.md` is still useful for telling Claude things it cannot see in the code.
 
 ## How it works
 
@@ -127,7 +131,7 @@ Then type, in any Claude Code chat:
 python test_simulate.py
 ```
 
-It runs the price function, the simulator, the report helpers and the startup audit on hand-made inputs with known answers, and prints `ok`.
+It runs the price function, the simulator, the report helpers, the startup audit and the experiment's cost summary on hand-made inputs with known answers, and prints `ok`.
 
 ## Limits
 
@@ -137,6 +141,7 @@ It runs the price function, the simulator, the report helpers and the startup au
 - One session was 50% of the month. Without it the simulated saving is 26%, not 35%.
 - The simulator assumes the same work after a checkpoint. It does not model answer quality. Its result moves from 38% to 27% as the assumed carry-over grows from 5,000 to 50,000 tokens.
 - `/delegate` has two measured runs, both small jobs.
+- The controlled test is one small repo, one model and three runs per set-up. Its context stayed under 110,000 tokens, so it does not test the 200k cap.
 
 ## Files
 
@@ -149,6 +154,7 @@ It runs the price function, the simulator, the report helpers and the startup au
 - **simulate.py** runs the what-if comparison and the sensitivity check.
 - **audit_startup.py** sizes each part of a session's first prompt.
 - **.claude/skills/delegate/SKILL.md** is the `/delegate` skill.
+- **experiment.py** runs the controlled test (it calls the model). **experiment_task.py** holds its prompts and checks.
 - **test_simulate.py** checks the scripts above.
 - **CHANGELOG.md** lists what changed and when.
 
@@ -156,7 +162,8 @@ It runs the price function, the simulator, the report helpers and the startup au
 
 - More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
 - More measured `/delegate` runs, on bulk reading jobs where it should pay.
-- A controlled test: the same scripted task run with the cap on and off, with the task's tests as the quality check.
+- The controlled test again with a task long enough to pass 200k tokens, with the cap on and off. The harness is ready; the task is not.
+- The code map on a larger repo, where grep is not enough.
 - A longer before and after comparison. The one here covers four days.
 
 ## About

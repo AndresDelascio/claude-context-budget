@@ -2,7 +2,7 @@
 
 This is the full write-up behind the [README](README.md). Each section gives the numbers, how they were produced, and their limits.
 
-Data: one month of my own Claude Code logs, Oct 19 to Nov 19, 2026, 39,275 API calls, 90 sessions.
+Data: one month of my own Claude Code logs, Oct 19 to Nov 19, 2026, 39,275 API calls, 90 sessions. Section 8 is separate: a controlled test of 12 scripted runs.
 
 Three kinds of number appear, and each one is labelled:
 
@@ -19,6 +19,7 @@ Contents:
 5. [What fills a new session](#5-what-fills-a-new-session)
 6. [Delegate a job to a cheaper model](#6-delegate-a-job-to-a-cheaper-model)
 7. [The same calls on each model](#7-the-same-calls-on-each-model)
+8. [Controlled test: project file, code map, handoff](#8-controlled-test-project-file-code-map-handoff)
 
 ## 1. Baseline
 
@@ -339,3 +340,51 @@ The same month of my calls at each model's list price (computed; assumes the tok
 Haiku 5.5 is 1/20 the price of Sonnet 5.5 per token, but only 0.4x here. A Haiku prompt above 100,000 tokens pays 5 times the price, and 96% of my calls were above that (measured). `python analyze_usage.py` prints both rows at the end of its report.
 
 **GUIDE.md** turns this into a one-page guide: which model fits which job, and where to set it.
+
+## 8. Controlled test: project file, code map, handoff
+
+Sections 1 to 7 read my own logs, where the work changes from day to day. This section is a controlled test: the same scripted task, run by Claude Code in four set-ups, with everything else held equal.
+
+| Arm | Set-up |
+|---|---|
+| A | Nothing added |
+| B | A `CLAUDE.md` project file (59 lines, written once by the model: test commands, conventions, where to export names) |
+| C | The same file, plus a graphify code map and a note telling the model to read the map first |
+| D | The same file, plus a handoff: after prompt 7 the model writes **HANDOFF.md**, and the rest runs in a new session that reads it |
+
+The task is 15 prompts sent in order into one conversation, on [click](https://github.com/pallets/click) 8.1.7 (a command-line library, about 10,000 lines of source). Ten prompts ask for a change (two new parameter types, a `deprecated` argument for options, a sort switch for groups, docs, a changelog). Five ask a "where is" or "what calls" question. The prompts are in **experiment_task.py**. The model is Sonnet 5.5 in every arm, with the same tools allowed and my own `CLAUDE.md`, skills and connectors kept out. Each arm ran 3 times.
+
+Quality is checked two ways: click's own test suite, and 18 checks in **experiment_task.py** that run the finished code. The untouched repo passes 1 of the 18.
+
+| Arm | Run 1 | Run 2 | Run 3 | Median US$ | Median API calls | Largest prompt (tokens) | Checks passed | Map uses |
+|---|---|---|---|---|---|---|---|---|
+| A, nothing | 1.04 | 0.86 | 0.84 | 0.86 | 63 | 91,799 | 18/18, 3 times | 0 |
+| B, project file | 0.93 | 1.25 | 0.89 | 0.93 | 57 | 108,570 | 18/18, 3 times | 0 |
+| C, file and map | 1.21 | 0.89 | 0.83 | 0.89 | 56 | 106,600 | 18/18, 3 times | 0 |
+| D, file and handoff | 1.11 | 1.06 | 1.31 | 1.11 | 71 | 83,394 | 18/18, 3 times | 0 |
+
+Tokens are measured from the session transcripts. Dollars are computed at list prices, and they equal the cost Claude Code itself reported in all 12 runs. Writing the project file took one extra session of US$0.13, not included above. The whole test used US$12.35.
+
+What the 12 runs show:
+
+- **The project file saved nothing measurable.** The same set-up varied by up to 40% from run to run (B: US$0.89 to US$1.25). A, B and C overlap completely.
+- **The model never opened the map.** In all C runs there were zero tool calls that ran `graphify` or read its output, though the project file told it to. On a repo this size it searched with grep. So this test cannot say what a map does when it is used.
+- **The handoff cost more.** D's cheapest run (US$1.06) is above A's dearest (US$1.04). With three runs each that is a hint, not a proven difference. It fits section 2: a fresh session only pays off once the context is large, and here no prompt passed 110,000 tokens.
+- **Quality was the same.** Every run passed all 18 checks. Click's suite showed one failure in every run, a Windows-only file name test that also fails on the untouched repo.
+
+Limits:
+
+- One small, well-known repo, one model, and a task that stayed under 110,000 tokens of context. My logs put 76% of the spend above 200,000 tokens, and this test does not reach that range. It does not test the 200k cap.
+- Three runs per arm. A difference smaller than the run-to-run spread would not show.
+- All 18 checks passed everywhere, so the checks could not show a quality difference if there was one.
+- The harness sends each prompt as a new `claude -p --resume` process. That re-writes about 9,000 tokens to the cache per prompt (measured once), which a live session would not do. It is the same in every arm.
+- The four arms of a round ran at the same time, so they may share cached prompt parts.
+
+Run it yourself (it calls the model, so it uses your subscription or API credit):
+
+```
+python experiment.py --pilot      # one run per arm
+python experiment.py --runs 3     # three runs per arm
+```
+
+It needs the `claude` CLI logged in, git, and `graphify` on your PATH for arm C. Raw records go to **data/experiment/**, which is git-ignored.
