@@ -49,7 +49,7 @@ The answer was no. The model mattered less than **how long each session had grow
 | 6 | On a small task, a project file or a code map saved nothing | Same 15-prompt task, 3 runs each: US$0.86 with nothing, US$0.93 with a `CLAUDE.md`, US$0.89 with a code map too. All passed the same 18 checks | controlled test, tokens measured, medians |
 | 7 | On a task that only just passes 200k, the cap saved tokens but not money | Same 35-prompt task, 3 runs each: US$3.26 without the cap, US$3.39 with it. 22% fewer prompt tokens, two compactions per run, all 32 checks passed both ways | controlled test, tokens measured, medians |
 
-Two results surprised me:
+Three results surprised me:
 
 - **A tighter cap is not better.** A 150k cap saves less than a 200k cap (30.6% against 35.2%, estimated), because every fresh session has to write its starting prompt to the cache again.
 - **Delegating a tiny job loses money.** A subagent starts at about 48,000 tokens before it reads anything (measured, two runs).
@@ -152,7 +152,7 @@ It runs the price function, the simulator, the report helpers, the startup audit
 - **GUIDE.md** is the one-page guide for picking a model and an effort level.
 - **how_it_works.png** and **how_it_works.pdf** are the one-page map of the repo. **how_it_works.html** is their source.
 - **extract_usage.py** reads the Claude Code logs and writes one row per API call to **data/usage.csv**.
-- **prices.py** holds the price table and the function that turns tokens into dollars.
+- **prices.py** holds the price table and the function that turns tokens into dollars. It lists six models. Calls on any other model are left out, and the scripts say how many.
 - **analyze_usage.py** prints the baseline report and, with `--split`, the before and after comparison.
 - **simulate.py** runs the what-if comparison and the sensitivity check.
 - **audit_startup.py** sizes each part of a session's first prompt.

@@ -1,8 +1,14 @@
 """Checks for prices.py and simulate.py on hand-made calls. Run:  python test_simulate.py"""
+import contextlib
+import csv
+import io
 import json
+import tempfile
 from math import isclose
+from pathlib import Path
 
-from analyze_usage import compactions, per_call, per_prompt, price, reprice
+import extract_usage
+from analyze_usage import compactions, load, per_call, per_prompt, price, reprice
 from audit_startup import first_request
 from prices import cost_parts
 from simulate import CARRY_TOKENS, call_cost, simulate
@@ -143,6 +149,65 @@ def test_experiment_summarize():
     s = summarize([c, c], turns=[{}, {"is_error": True}])
     assert isclose(s["usd"], 2 * (0.01 + 0.005 + 10 * 2e-6))  # same prices as test_reprice
     assert (s["calls"], s["prompt_tokens"], s["max_prompt"], s["output_tokens"], s["errors"]) == (2, 200_020, 100_010, 1_000, 1)
+
+
+def test_date_range_uses_true_session_starts():
+    # A date range that begins mid-session: its first call is a 252k prompt, not a fresh start.
+    tail = MAIN[100:]
+    cost, n = simulate(tail, cap=150_000)  # sized from the range itself: "fresh" looks bigger than the cap
+    assert n == 0 and isclose(cost, sum(call_cost(r) for r in tail))
+    cost, n = simulate(tail, cap=150_000, starts=MAIN[:1])  # sized from the session's real first call (52k)
+    assert n > 0 and cost < sum(call_cost(r) for r in tail)
+
+
+def test_load_leaves_out_unpriced_models():
+    with tempfile.TemporaryDirectory() as tmp:
+        cols = "ts,project,session,subagent,agent_file,model,in,out,cache_write_5m,cache_write_1h,cache_read,tools,fast"
+        Path(tmp, "usage.csv").write_text(
+            f"{cols}\nt1,p,s,0,,{OPUS},10,500,0,0,0,,0\nt2,p,s,0,,some-old-model,10,500,0,0,0,,0\n", encoding="utf-8")
+        said = io.StringIO()
+        with contextlib.redirect_stdout(said):
+            rows = load(Path(tmp))
+        assert [r["model"] for r in rows] == [OPUS] and "some-old-model" in said.getvalue()
+        try:
+            load(Path(tmp, "missing"))
+            raise AssertionError("a missing usage.csv should stop with a message")
+        except SystemExit as e:
+            assert "extract_usage.py" in str(e)
+
+
+def test_extract():
+    def line(**d):
+        return json.dumps(d, separators=(",", ":")) + "\n"  # Claude Code writes compact JSON
+
+    def reply(mid, out, block, w=300, w1h=200):
+        usage = {"input_tokens": 5, "output_tokens": out, "cache_read_input_tokens": 1_000,
+                 "cache_creation_input_tokens": w, "cache_creation": {"ephemeral_1h_input_tokens": w1h}}
+        return line(type="assistant", timestamp="2026-01-01T00:00:0" + mid[-1],
+                    message={"id": mid, "model": OPUS, "usage": usage, "content": [block]})
+
+    tool = {"type": "tool_use", "id": "t1", "name": "Read"}
+    with tempfile.TemporaryDirectory() as tmp:
+        logs, out = Path(tmp, "logs"), Path(tmp, "out")
+        (logs / "proj" / "s2" / "subagents").mkdir(parents=True)
+        # One API call logged as two blocks (the second has the final output count) after one typed prompt.
+        (logs / "proj" / "s1.jsonl").write_text(
+            line(type="user", timestamp="2026-01-01T00:00:00", message={"content": "fix the bug"})
+            + reply("m1", 10, {"type": "text", "text": "ok"}) + reply("m1", 50, tool) + "not json\n", encoding="utf-8")
+        (logs / "proj" / "s2.jsonl").write_text(reply("m1", 50, tool), encoding="utf-8")  # resumed: same call again
+        (logs / "proj" / "s2" / "subagents" / "agent-a.jsonl").write_text(reply("m2", 7, {**tool, "id": "t2", "name": "Bash"}, w=0, w1h=0), encoding="utf-8")
+        with contextlib.redirect_stdout(io.StringIO()):
+            extract_usage.main(logs, out)
+        m1, m2 = csv.DictReader((out / "usage.csv").open(encoding="utf-8"))
+        assert (m1["in"], m1["out"], m1["cache_write_1h"], m1["cache_write_5m"], m1["cache_read"]) == ("5", "50", "200", "100", "1000")
+        assert m1["tools"] == "Read" and m1["subagent"] == "0"         # counted once, though logged three times
+        assert (m2["session"], m2["subagent"], m2["tools"]) == ("s2", "1", "Bash")
+        assert [t["text"] for t in json.loads((out / "turns.json").read_text(encoding="utf-8"))] == ["fix the bug"]
+        try:
+            extract_usage.main(Path(tmp, "empty"), out)
+            raise AssertionError("no logs should stop with a message")
+        except SystemExit as e:
+            assert "No API calls" in str(e)
 
 
 if __name__ == "__main__":

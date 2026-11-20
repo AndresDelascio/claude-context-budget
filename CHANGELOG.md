@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2026-11-20
+- Fixed `simulate.py --since`: a fresh session is now sized from each session's true first call, not from the first call inside the date range. The whole-month figures did not change.
+- The scripts no longer crash on logs with a model that `prices.py` does not list, on an empty log folder, or on a missing `usage.csv`. They say what happened instead.
+- `extract_usage.py` counts a tool call once when a resumed session logs it again. `audit_startup.py` has `--help` and skips half-written log lines.
+- `experiment.py` saves the `claude` version with each run. Tests added for the extractor, the date-range fix and unpriced models.
 - Added a controlled test of the 200k cap: a 35-prompt task (`LONG_PROMPTS`, 32 checks) and arms E and F in `experiment.py`. STUDY.md section 9 has the 6 runs: 22% fewer prompt tokens with the cap, no saving in dollars, same quality.
 - README: a seventh finding and a result row from that test. The 35% is now stated as an estimate for long sessions.
 - `experiment.py` reports the CLI's own cost in its medians and counts compactions.

@@ -14,13 +14,14 @@ from collections import defaultdict
 from pathlib import Path
 from statistics import median
 
-from prices import cost_parts
+from prices import PRICES, cost_parts
 
 DATA = Path(__file__).parent / "data"
 PARTS = ("in", "out", "write", "read")
 MIN_CALLS = 100  # --split skips a model with fewer calls than this in either period: too few to compare
 MIN_PROMPTS = 20  # same for the per-prompt table, in typed prompts
 CURRENT = ("claude-fable-5-2", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5")  # models compared by reprice()
+SCRATCH_MARK = "scratch-workspaces"  # a project folder with this in its name is shown by its last part only (long temp paths)
 DROP = 0.7  # a prompt below 70% of the previous call's prompt counts as a compaction (context was summarized)
 
 
@@ -33,14 +34,22 @@ def price(r):
     return r
 
 
-def load():
-    rows = list(csv.DictReader((DATA / "usage.csv").open(encoding="utf-8")))
-    for r in rows:
+def load(data=DATA):
+    """Read usage.csv and price every call. Calls on a model that prices.py does not list are left out."""
+    if not (data / "usage.csv").exists():
+        raise SystemExit(f"{data / 'usage.csv'} not found. Run python extract_usage.py first.")
+    rows = list(csv.DictReader((data / "usage.csv").open(encoding="utf-8")))
+    priced = [r for r in rows if r["model"] in PRICES]
+    if len(priced) < len(rows):  # say so instead of failing or guessing a price
+        print(f"Left out {len(rows) - len(priced)} of {len(rows)} calls on models not in prices.py: "
+              + ", ".join(sorted({r["model"] for r in rows} - set(PRICES))) + "\n")
+    for r in priced:
         for k in ("in", "out", "cache_write_5m", "cache_write_1h", "cache_read", "subagent", "fast"):
             r[k] = int(r[k])
         price(r)
-        r["proj"] = r["project"].split("scratch-")[-1] if "scratch-workspaces" in r["project"] else r["project"]
-    return rows
+        if SCRATCH_MARK in r["project"]:
+            r["project"] = r["project"].split("scratch-")[-1]
+    return priced
 
 
 def group(rows, key):
@@ -178,10 +187,10 @@ def main():
         print(f"{day} {usd(w)} sub {100 * sub / w:3.0f}%  {'#' * int(w / total * 200)}")
 
     table("per model, main vs subagent", group(rows, lambda r: (r["model"], "SUB" if r["subagent"] else "main")), extra=mix)
-    table("per project", group(rows, lambda r: r["proj"]))
+    table("per project", group(rows, lambda r: r["project"]))
     table("top hours (UTC)", group(rows, lambda r: r["ts"][:13]), 12,
           lambda rs: f"sub {100 * sum(r['w'] for r in rs if r['subagent']) / sum(r['w'] for r in rs):.0f}% | {mix(rs)} | "
-                     + ",".join(sorted({r['proj'][:28] for r in rs})))
+                     + ",".join(sorted({r["project"][:28] for r in rs})))
 
     print("\n== top sessions ==")
     for s, rs in sorted(group(rows, lambda r: r["session"]).items(), key=lambda kv: -sum(r["w"] for r in kv[1]))[:12]:
@@ -190,7 +199,7 @@ def main():
         sub_rs = [r for r in rs if r["subagent"]]
         agents = group(sub_rs, lambda r: r["agent_file"])
         models = {m: round(100 * sum(r["w"] for r in x) / w) for m, x in group(rs, lambda r: (r["model"][7:], "S" if r["subagent"] else "m")).items()}
-        print(f"\n{usd(w)} ({100 * w / total:.0f}% of all) {s[:8]} {rs[0]['proj'][:40]}  {rs[0]['ts'][:16]} -> {rs[-1]['ts'][:16]}")
+        print(f"\n{usd(w)} ({100 * w / total:.0f}% of all) {s[:8]} {rs[0]['project'][:40]}  {rs[0]['ts'][:16]} -> {rs[-1]['ts'][:16]}")
         print(f"   calls main {len(main_rs)} / sub {len(sub_rs)} in {len(agents)} agents | {mix(rs)}")
         print(f"   models {models}")
         if main_rs:

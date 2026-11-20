@@ -7,9 +7,9 @@ Tokens per part are ESTIMATED: the measured total is shared out in proportion to
 Run:  python audit_startup.py                 (your most recent session)
       python audit_startup.py path/to/session.jsonl
 """
+import argparse
 import json
 import re
-import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -37,7 +37,10 @@ def first_request(lines):
     """
     parts, shape, blob_chars = [], None, 0
     for line in lines:
-        d = json.loads(line)
+        try:
+            d = json.loads(line)
+        except json.JSONDecodeError:  # a half-written line; extract_usage.py skips these too
+            continue
         kind = d.get("type")
         if kind == "api-request-shape" and shape is None:
             shape = d["shape"]  # system prompt and tool definitions, as sent
@@ -94,9 +97,12 @@ def report(parts, tokens):
 
 
 def main():
-    files = [Path(sys.argv[1])] if len(sys.argv) > 1 else sorted(LOGS.glob("*/*.jsonl"), key=lambda p: -p.stat().st_mtime)
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("session", nargs="?", type=Path, help="a session .jsonl file (default: your most recent session)")
+    args = ap.parse_args()
+    files = [args.session] if args.session else sorted(LOGS.glob("*/*.jsonl"), key=lambda p: -p.stat().st_mtime)
     for f in files:
-        with f.open(encoding="utf-8") as fh:
+        with f.open(encoding="utf-8", errors="replace") as fh:
             found = first_request(fh)
         if found:
             parts, tokens, about = found

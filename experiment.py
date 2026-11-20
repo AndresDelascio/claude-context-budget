@@ -214,6 +214,9 @@ def main():
     base, venv = setup()
     out = OUT / time.strftime("%Y%m%d-%H%M%S")
     out.mkdir(parents=True)
+    # Caching and compaction change between client versions, so each results folder records its own.
+    version = subprocess.run([shutil.which("claude"), "--version"], capture_output=True, text=True).stdout
+    (out / "claude_version.txt").write_text(version, encoding="utf-8")
     # The project file is written once, by the model, on a throwaway copy, and reused by arms B, C and D.
     scratch = WORK / "runs" / f"{out.name}-setup"
     shutil.copytree(base, scratch)

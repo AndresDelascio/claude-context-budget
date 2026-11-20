@@ -16,12 +16,13 @@ LOG_ROOT = Path.home() / ".claude" / "projects"
 OUT_DIR = Path(__file__).parent / "data"
 
 
-def main():
+def main(log_root=LOG_ROOT, out_dir=OUT_DIR):
     calls = {}    # message id -> row; one API call is logged once per content block, so dedupe
+    seen_tools = set()  # tool call ids; a resumed session copies old messages into a new file
     prompts = {}  # session id -> first thing the user typed
     turns = []    # every prompt the user typed
-    for path in LOG_ROOT.rglob("*.jsonl"):
-        rel = path.relative_to(LOG_ROOT)
+    for path in log_root.rglob("*.jsonl"):
+        rel = path.relative_to(log_root)
         project = rel.parts[0]
         is_subagent_file = "subagents" in rel.parts
         # main file is <session>.jsonl; subagent files live in <session>/subagents/
@@ -38,8 +39,11 @@ def main():
                     if not u or not m.get("id") or m.get("model") == "<synthetic>":
                         continue
                     cc = u.get("cache_creation") or {}
-                    tools = [b["name"] for b in m.get("content", [])
-                             if isinstance(b, dict) and b.get("type") == "tool_use"]
+                    tools = []
+                    for b in m.get("content", []):
+                        if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("id") not in seen_tools:
+                            seen_tools.add(b.get("id"))
+                            tools.append(b["name"])
                     row = calls.setdefault(m["id"], {
                         "ts": d.get("timestamp", ""), "project": project, "session": session,
                         "subagent": int(is_subagent_file or bool(d.get("isSidechain"))),
@@ -74,13 +78,15 @@ def main():
                                       "chars": len(c), "text": c.strip()[:200]})
 
     rows = sorted(calls.values(), key=lambda r: r["ts"])
-    OUT_DIR.mkdir(exist_ok=True)
-    with (OUT_DIR / "usage.csv").open("w", newline="", encoding="utf-8") as f:
+    if not rows:
+        raise SystemExit(f"No API calls found under {log_root}. Use Claude Code first, then run this again.")
+    out_dir.mkdir(exist_ok=True)
+    with (out_dir / "usage.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
-    (OUT_DIR / "prompts.json").write_text(json.dumps(prompts, indent=1), encoding="utf-8")
-    (OUT_DIR / "turns.json").write_text(json.dumps(sorted(turns, key=lambda t: t["ts"]), indent=1), encoding="utf-8")
+    (out_dir / "prompts.json").write_text(json.dumps(prompts, indent=1), encoding="utf-8")
+    (out_dir / "turns.json").write_text(json.dumps(sorted(turns, key=lambda t: t["ts"]), indent=1), encoding="utf-8")
     print(f"{len(rows)} API calls, {len(turns)} typed prompts, {len(prompts)} sessions, {rows[0]['ts'][:10]} .. {rows[-1]['ts'][:10]}")
 
 

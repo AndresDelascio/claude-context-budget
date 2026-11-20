@@ -43,25 +43,35 @@ def call_cost(r, model=None, prompt=None):
     return sum(cost_parts(model or r["model"], n_in, w5m, w1h, read, r["out"], r["fast"] and not model))
 
 
-def simulate(rows, cap=None, sub_model=None, trim=0):
+def session_starts(rows):
+    """The first main-conversation call of each session in `rows`."""
+    first = {}
+    for r in rows:
+        if not r["subagent"]:
+            first.setdefault(r["session"], r)
+    return list(first.values())
+
+
+def simulate(rows, cap=None, sub_model=None, trim=0, starts=None):
     """Cost of the same calls under a policy. Returns (US$, number of checkpoints).
+
+    starts:    the calls that size a fresh session (default: the first call of each session in `rows`).
+               Pass the true session starts when `rows` is a date range: a session that began before
+               the range would otherwise count a mid-session prompt as a fresh start.
 
     rows:      calls in time order (from analyze_usage.load)
     cap:       a main conversation is checkpointed into a fresh session when its prompt passes `cap` tokens
     sub_model: subagent calls on a pricier model are re-priced on this one (ASSUMES the same token counts)
     trim:      every prompt is `trim` tokens smaller (leaner startup: fewer tools, skills, instructions)
     """
-    first = {}  # session -> its first main-conversation call
-    for r in rows:
-        if not r["subagent"]:
-            first.setdefault(r["session"], r)
+    first = session_starts(rows) if starts is None else starts
     # A fresh session starts at the typical MEASURED startup prompt plus what the checkpoint carries over.
     # Only part of that prompt is written to the cache again; the rest (system prompt, tools) is still
     # cached from earlier sessions, so `fresh_write` is the MEASURED non-cached part of a first call.
     fresh = fresh_write = CARRY_TOKENS
     if first:
-        fresh += max(median(r["ctx"] for r in first.values()) - trim, 0)
-        fresh_write = min(fresh, fresh_write + median(r["ctx"] - r["cache_read"] for r in first.values()))
+        fresh += max(median(r["ctx"] for r in first) - trim, 0)
+        fresh_write = min(fresh, fresh_write + median(r["ctx"] - r["cache_read"] for r in first))
 
     total, checkpoints = 0.0, 0
     threads = {}  # (session, model) -> (real prompt size, simulated prompt size) at its previous call
@@ -91,7 +101,7 @@ def simulate(rows, cap=None, sub_model=None, trim=0):
     return total, checkpoints
 
 
-def sensitivity(rows, cap):
+def sensitivity(rows, cap, starts=None):
     """Print the saving of one cap for each pair of the two ASSUMED checkpoint values."""
     global SUMMARY_OUT_TOKENS, CARRY_TOKENS
     keep = SUMMARY_OUT_TOKENS, CARRY_TOKENS
@@ -101,7 +111,7 @@ def sensitivity(rows, cap):
     for SUMMARY_OUT_TOKENS in SWEEP_SUMMARY:
         cells = []
         for CARRY_TOKENS in SWEEP_CARRY:
-            cost, n = simulate(rows, cap=cap)
+            cost, n = simulate(rows, cap=cap, starts=starts)
             cells.append(f"{100 * (1 - cost / base):.1f}% ({n})")
         print(f"{SUMMARY_OUT_TOKENS:>24,d}" + "".join(f"{c:>16s}" for c in cells))
     SUMMARY_OUT_TOKENS, CARRY_TOKENS = keep
@@ -114,16 +124,19 @@ def main():
     ap.add_argument("--trim-startup", type=int, default=0, metavar="K",
                     help="also try prompts this many thousand tokens smaller (leaner startup)")
     ap.add_argument("--since", default="", metavar="YYYY-MM-DD", help="only calls on or after this UTC date")
-    ap.add_argument("--until", default="9", metavar="YYYY-MM-DD", help="only calls before this UTC date")
+    ap.add_argument("--until", default="9999-12-31", metavar="YYYY-MM-DD", help="only calls before this UTC date")
     ap.add_argument("--without-top", type=int, default=0, metavar="N",
                     help="leave out the N costliest sessions, to see how much the result depends on them")
     ap.add_argument("--sensitivity", action="store_true",
                     help="only print how the saving of each --cap moves with the two assumed checkpoint values")
     args = ap.parse_args()
 
-    rows = [r for r in load() if args.since <= r["ts"] < args.until]  # ISO timestamps compare as text
+    every = load()
+    rows = [r for r in every if args.since <= r["ts"] < args.until]  # ISO timestamps compare as text
     if not rows:
         raise SystemExit("no calls in that date range")
+    # True session starts that fall in the range; a range with none falls back to all of them.
+    starts = [r for r in session_starts(every) if args.since <= r["ts"] < args.until] or session_starts(every)
     if args.without_top:
         spend = {}
         for r in rows:
@@ -132,9 +145,10 @@ def main():
         print(f"Left out the {len(top)} costliest session(s): ${sum(spend[s] for s in top):,.2f}, "
               f"{100 * sum(spend[s] for s in top) / sum(spend.values()):.0f}% of the period (COMPUTED)")
         rows = [r for r in rows if r["session"] not in top]
+        starts = [r for r in starts if r["session"] not in top] or starts
     if args.sensitivity:
         for c in args.cap:
-            sensitivity(rows, c * 1000)
+            sensitivity(rows, c * 1000, starts)
         return
     sub = SUBAGENT_MODEL.removeprefix("claude-")
     trim = args.trim_startup * 1000
@@ -151,7 +165,7 @@ def main():
     print("Cost = US$ at API list prices, COMPUTED from MEASURED tokens. Not a subscription bill.\n")
     print(f"{'policy':50s} {'cost':>11s} {'saved':>6s}  checkpoints")
     for label, kw in policies:
-        cost, n = simulate(rows, **kw)
+        cost, n = simulate(rows, starts=starts, **kw)
         print(f"{label:50s} ${cost:10,.2f} {100 * (1 - cost / base):5.1f}%  {n or ''}")
     big = sum(r["w"] for r in rows if not r["subagent"] and r["ctx"] > SCORE_CTX_TOKENS)
     print(f"\nScore: {100 * big / base:.0f}% of spend was on main-conversation calls with a prompt over "
