@@ -12,6 +12,7 @@ Token counts are MEASURED (from your logs). Dollars are COMPUTED at list prices
 
 Run:  python simulate.py            (after python extract_usage.py)
       python simulate.py --since 2026-11-12 --cap 200 --trim-startup 30
+      python simulate.py --sensitivity --cap 200   (how much the two assumed values matter)
 """
 import argparse
 from statistics import median
@@ -24,6 +25,8 @@ SUMMARY_OUT_TOKENS = 4_000  # tokens Claude writes for the hand-off summary at a
 CARRY_TOKENS = 20_000       # summary + files re-read at the start of the fresh session
 SUBAGENT_MODEL = "claude-sonnet-5-5"  # the cheaper model subagents are re-priced on
 # --- reporting ---
+SWEEP_SUMMARY = (1_000, 4_000, 16_000)         # --sensitivity tries these summary sizes (tokens)...
+SWEEP_CARRY = (5_000, 20_000, 50_000, 100_000)  # ...against these carried-over sizes (tokens)
 SCORE_CTX_TOKENS = 200_000  # score = share of spend on calls with a prompt larger than this
 
 
@@ -88,6 +91,22 @@ def simulate(rows, cap=None, sub_model=None, trim=0):
     return total, checkpoints
 
 
+def sensitivity(rows, cap):
+    """Print the saving of one cap for each pair of the two ASSUMED checkpoint values."""
+    global SUMMARY_OUT_TOKENS, CARRY_TOKENS
+    keep = SUMMARY_OUT_TOKENS, CARRY_TOKENS
+    base, _ = simulate(rows)
+    print(f"Saved by a new session past {cap // 1000}k tokens (checkpoints in brackets), by ASSUMED value:")
+    print(f"{'summary / carried over':>24s}" + "".join(f"{c:>16,d}" for c in SWEEP_CARRY))
+    for SUMMARY_OUT_TOKENS in SWEEP_SUMMARY:
+        cells = []
+        for CARRY_TOKENS in SWEEP_CARRY:
+            cost, n = simulate(rows, cap=cap)
+            cells.append(f"{100 * (1 - cost / base):.1f}% ({n})")
+        print(f"{SUMMARY_OUT_TOKENS:>24,d}" + "".join(f"{c:>16s}" for c in cells))
+    SUMMARY_OUT_TOKENS, CARRY_TOKENS = keep
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--cap", type=int, nargs="+", default=[300, 200, 150], metavar="K",
@@ -96,11 +115,17 @@ def main():
                     help="also try prompts this many thousand tokens smaller (leaner startup)")
     ap.add_argument("--since", default="", metavar="YYYY-MM-DD", help="only calls on or after this UTC date")
     ap.add_argument("--until", default="9", metavar="YYYY-MM-DD", help="only calls before this UTC date")
+    ap.add_argument("--sensitivity", action="store_true",
+                    help="only print how the saving of each --cap moves with the two assumed checkpoint values")
     args = ap.parse_args()
 
     rows = [r for r in load() if args.since <= r["ts"] < args.until]  # ISO timestamps compare as text
     if not rows:
         raise SystemExit("no calls in that date range")
+    if args.sensitivity:
+        for c in args.cap:
+            sensitivity(rows, c * 1000)
+        return
     sub = SUBAGENT_MODEL.removeprefix("claude-")
     trim = args.trim_startup * 1000
     policies = [("as logged", {})]

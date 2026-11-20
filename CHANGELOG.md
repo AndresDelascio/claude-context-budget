@@ -10,4 +10,5 @@
 - Added `python audit_startup.py`: sizes each part of a session's first prompt (tool definitions, system prompt, skills list, connectors, instruction files). README has the result for one session, and two measured trims: skills moved into their project, and a deny rule that removes an unused tool (needs an app restart).
 - Added the `/delegate` skill: one job, one subagent, cheapest model that fits. README has one measured run on Haiku 5.5.
 - Added **GUIDE.md**: which model and effort for which job, with list prices and my month of calls priced on each model. `python analyze_usage.py` now ends with that comparison.
+- Added `python simulate.py --sensitivity`: the saving of a cap for a range of the two assumed checkpoint values. README has the table for the 200k cap.
 - Dropped the planned cap warning: Claude Code's `autoCompactWindow` setting already does it.

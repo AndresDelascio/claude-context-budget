@@ -291,6 +291,7 @@ Useful options:
 python simulate.py --cap 250 200            # try other caps, in thousands of tokens
 python simulate.py --trim-startup 30        # also try a 30k smaller startup prompt
 python simulate.py --since 2026-11-12       # only the last week
+python simulate.py --sensitivity --cap 200  # how much the two assumed values matter
 python analyze_usage.py --split 2026-11-16  # cost per call before and from a date
 python audit_startup.py path/to/session.jsonl  # audit one chosen session
 ```
@@ -315,7 +316,29 @@ Limits:
 
 - It assumes the work after a checkpoint takes the same calls and the same output as before. It does not model quality.
 - Dollar figures use list prices. They are not a subscription bill.
-- The assumed values sit at the top of **simulate.py**. Change them and re-run to see how much the result moves.
+- The assumed values sit at the top of **simulate.py**.
+
+### How much the two assumed values matter
+
+```
+python simulate.py --sensitivity --cap 200
+```
+
+Estimated saving of the 200k cap on my logs, for each pair of assumed values (the number of checkpoints is in brackets):
+
+| Summary written | 5,000 carried over | 20,000 | 50,000 | 100,000 |
+|---|---|---|---|---|
+| 1,000 tokens | 38.6% (443) | 35.8% (504) | 28.2% (712) | -24.3% (2,612) |
+| 4,000 tokens | 38.0% (443) | **35.2% (504)** | 27.4% (712) | -27.4% (2,612) |
+| 16,000 tokens | 35.9% (443) | 32.7% (504) | 23.9% (712) | -40.0% (2,612) |
+
+The bold cell is the one used everywhere else in this README.
+
+1. **The summary size hardly matters.** A summary 16 times longer moves the result by about 3 points.
+2. **What a fresh session carries over matters a lot.** From 5,000 to 50,000 tokens the saving falls from 38% to 27%.
+3. **Carry over too much and the cap costs money.** With 100,000 tokens carried over, a fresh session starts at 185k, hits the 200k cap again almost at once, and the month costs 27% more than as logged.
+
+The 20,000 value is supported by the real compactions above: the median prompt after one was 106k tokens, against 105k in the simulator. So I quote the 200k cap as **about 27% to 38%, 35% at the value my logs support**, not as one number.
 
 ## Check the code
 
