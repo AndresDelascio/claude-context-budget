@@ -1,0 +1,160 @@
+<!doctype html>
+<!-- Source of how_it_works.pdf. One landscape Letter page: 1056 x 816 px at 96 px per inch.
+     Export:  msedge --headless --no-pdf-header-footer --print-to-pdf=how_it_works.pdf how_it_works.html -->
+<meta charset="utf-8">
+<title>How claude-context-budget works</title>
+<style>
+  @page { size: 11in 8.5in; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; width: 1056px; height: 816px; position: relative; overflow: hidden;
+         font: 12px/1.35 "Segoe UI", Helvetica, Arial, sans-serif; color: #1f2328; background: #fff;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .abs { position: absolute; }
+  h1 { margin: 0; font-size: 24px; font-weight: 650; }
+  .sub { color: #59636e; font-size: 13px; }
+  .step { color: #59636e; font-size: 10.5px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+  .box { position: absolute; border: 1.5px solid #d1d9e0; border-radius: 8px; background: #f6f8fa; padding: 9px 11px; }
+  .box b.name { display: block; font: 650 12.5px Consolas, "Cascadia Mono", monospace; margin-bottom: 3px; }
+  .box .t { display: block; font-weight: 650; font-size: 13px; margin-bottom: 3px; }
+  .script { background: #fff; border-color: #0969da; }
+  .cmd { display: block; margin-top: 5px; font: 10.5px Consolas, monospace; color: #59636e; }
+  .group { position: absolute; border: 1.5px dashed #8c959f; border-radius: 10px; }
+  .group span { position: absolute; top: 5px; left: 11px; font-size: 11px; color: #59636e; }
+  .group span b { font: 650 11.5px Consolas, monospace; color: #1f2328; }
+  .pill { display: inline-block; border-radius: 9px; padding: 0 7px; font-size: 10px; font-weight: 650; color: #fff; margin-right: 3px; }
+  .m { background: #1a7f37; } .c { background: #0969da; } .e { background: #9a6700; }
+  .num { display: block; margin-top: 4px; font-size: 11.5px; }
+  .act { background: #fff; border-color: #1f2328; }
+  .act .n { position: absolute; top: -11px; left: 10px; width: 22px; height: 22px; border-radius: 11px; background: #1f2328;
+            color: #fff; font-weight: 650; text-align: center; line-height: 22px; }
+  .act .t { margin-top: 5px; }
+  .foot { font-size: 11px; color: #59636e; }
+  .foot b { color: #1f2328; }
+  code { font: 11px Consolas, monospace; white-space: nowrap; }
+  svg { position: absolute; left: 0; top: 0; }
+</style>
+
+<div class="abs" style="left:40px; top:26px">
+  <h1>How claude-context-budget works</h1>
+  <div class="sub">Claude Code logs every API call on your machine. Four small Python scripts read those logs and show where the tokens went.</div>
+</div>
+
+<div class="abs step" style="left:40px;  top:100px">1 · Your logs</div>
+<div class="abs step" style="left:220px; top:100px">2 · Extract</div>
+<div class="abs step" style="left:400px; top:100px">3 · Local data</div>
+<div class="abs step" style="left:590px; top:100px">4 · Measure</div>
+<div class="abs step" style="left:820px; top:100px">5 · What you get</div>
+
+<!-- column 1 to 3 -->
+<div class="box" style="left:40px; top:162px; width:150px; height:136px">
+  <span class="t">Claude Code logs</span>
+  <code>~/.claude/projects/</code><br><code>*.jsonl</code>
+  <span class="num">One record per API call, with its token counts. Read only.</span>
+</div>
+<div class="box script" style="left:220px; top:162px; width:150px; height:136px">
+  <b class="name">extract_usage.py</b>
+  Copies the token counts of every call into one table.
+  
+</div>
+<div class="box" style="left:400px; top:162px; width:150px; height:136px">
+  <b class="name">data/</b>
+  <code>usage.csv</code><br>one row per call<br>
+  <code>prompts.json</code><br><code>turns.json</code>
+  <span class="num">Git-ignored: it holds your prompt text.</span>
+</div>
+
+<!-- column 4: scripts -->
+<div class="group" style="left:580px; top:122px; width:220px; height:226px">
+  <span><b>prices.py</b> &nbsp;tokens × list price = US$</span>
+</div>
+<div class="box script" style="left:590px; top:148px; width:200px; height:92px">
+  <b class="name">analyze_usage.py</b>
+  Where the spend went. With <code>--split</code>, cost per call before and after a date.
+</div>
+<div class="box script" style="left:590px; top:248px; width:200px; height:92px">
+  <b class="name">simulate.py</b>
+  Replays the same calls as if long sessions had restarted at a size cap.
+</div>
+<div class="box script" style="left:590px; top:378px; width:200px; height:92px">
+  <b class="name">audit_startup.py</b>
+  Sizes each part of a new session's first prompt. Reads the logs directly.
+</div>
+
+<!-- column 5: results -->
+<div class="box" style="left:820px; top:148px; width:196px; height:92px">
+  <span class="t">Baseline report</span>
+  <span class="pill c">computed</span>
+  <span class="num">76% of spend was on prompts over 200k tokens</span>
+</div>
+<div class="box" style="left:820px; top:248px; width:196px; height:92px">
+  <span class="t">What-if estimate</span>
+  <span class="pill e">estimated</span>
+  <span class="num">A 200k context cap saves 27% to 38%</span>
+</div>
+<div class="box" style="left:820px; top:378px; width:196px; height:92px">
+  <span class="t">Startup breakdown</span>
+  <span class="pill m">measured</span> 89,428 tokens
+  <span class="num"><span class="pill e">estimated</span> 54% tool definitions</span>
+</div>
+
+<!-- arrows: straight lines only, so nothing can cross -->
+<svg width="1056" height="816" fill="none" stroke="#59636e" stroke-width="1.6">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#59636e" stroke="none"/></marker></defs>
+  <path d="M190 230H218" marker-end="url(#a)"/>
+  <path d="M370 230H398" marker-end="url(#a)"/>
+  <path d="M550 230H578" marker-end="url(#a)"/>
+  <path d="M790 194H818" marker-end="url(#a)"/>
+  <path d="M790 294H818" marker-end="url(#a)"/>
+  <path d="M790 424H818" marker-end="url(#a)"/>
+  <path d="M115 298V424H588" marker-end="url(#a)"/>
+</svg>
+<div class="abs foot" style="left:128px; top:404px">read directly, no extract step needed</div>
+
+<!-- actions -->
+<div class="abs step" style="left:40px; top:500px">6 · What the results told me to do</div>
+
+<div class="box act" style="left:40px; top:538px; width:185px; height:124px"><span class="n">1</span>
+  <span class="t">Cap the context</span>
+  <code>autoCompactWindow: 200000</code>
+  <span class="num"><span class="pill c">computed</span><br>−45% per call on Opus 5.5 (four days, not a controlled test)</span>
+</div>
+<div class="box act" style="left:238px; top:538px; width:185px; height:124px"><span class="n">2</span>
+  <span class="t">One task per session</span>
+  A long chat re-sends its history on every step.
+  <span class="num"><span class="pill c">computed</span><br>One session was 50% of the month</span>
+</div>
+<div class="box act" style="left:436px; top:538px; width:185px; height:124px"><span class="n">3</span>
+  <span class="t">Remove unused tools</span>
+  A deny rule in the project settings.
+  <span class="num"><span class="pill e">estimated</span><br>One tool was about 13,000 tokens in every request</span>
+</div>
+<div class="box act" style="left:634px; top:538px; width:185px; height:124px"><span class="n">4</span>
+  <span class="t">Cheaper subagents</span>
+  The <code>/delegate</code> skill in this repo.
+  <span class="num"><span class="pill c">computed</span><br>One job: US$0.15 on Sonnet 5.5, US$0.60 on Fable 5.2</span>
+</div>
+<div class="box act" style="left:832px; top:538px; width:184px; height:124px"><span class="n">5</span>
+  <span class="t">Pick the model on purpose</span>
+  <b>GUIDE.md</b>, one page: which model and effort for which job.
+</div>
+
+<!-- footer -->
+<div class="abs" style="left:40px; top:684px; width:976px; border-top:1.5px solid #d1d9e0"></div>
+<div class="abs foot" style="left:40px; top:698px; width:300px">
+  <b>How to read a number</b><br>
+  <span class="pill m">measured</span> counted in the logs<br>
+  <span class="pill c">computed</span> measured tokens × list prices, not a bill<br>
+  <span class="pill e">estimated</span> rests on a stated assumption
+</div>
+<div class="abs foot" style="left:378px; top:698px; width:300px">
+  <b>Checked by</b><br>
+  <code>python test_simulate.py</code> runs the price function, the simulator, the report helpers and the audit on
+  hand-made inputs with known answers, and prints <code>ok</code>.
+</div>
+<div class="abs foot" style="left:716px; top:698px; width:300px">
+  <b>Where to read more</b><br>
+  <b>README.md</b> the findings · <b>STUDY.md</b> full method and limits<br>
+  Python 3.9 or newer. No packages. Nothing is uploaded.<br>
+  github.com/AndresDelascio/claude-context-budget
+</div>

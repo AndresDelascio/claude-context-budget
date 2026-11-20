@@ -31,7 +31,7 @@ Two results surprised me:
 - **A tighter cap is not better.** A 150k cap saves less than a 200k cap (30.6% against 35.2%, estimated), because every fresh session has to write its starting prompt to the cache again.
 - **Delegating a tiny job loses money.** A subagent starts at about 48,000 tokens before it reads anything (measured, two runs).
 
-The full method, tables and limits are in **[STUDY.md](STUDY.md)**.
+The full method, tables and limits are in **[STUDY.md](STUDY.md)**. A one-page map of how the scripts fit together is in **[how_it_works.pdf](how_it_works.pdf)**.
 
 ## What to do about it
 
@@ -115,6 +115,7 @@ It runs the price function, the simulator, the report helpers and the startup au
 
 - **STUDY.md** is the full write-up: method, tables and limits for every finding.
 - **GUIDE.md** is the one-page guide for picking a model and an effort level.
+- **how_it_works.pdf** is a one-page map of the repo. **how_it_works.html** is its source.
 - **extract_usage.py** reads the Claude Code logs and writes one row per API call to **data/usage.csv**.
 - **prices.py** holds the price table and the function that turns tokens into dollars.
 - **analyze_usage.py** prints the baseline report and, with `--split`, the before and after comparison.
