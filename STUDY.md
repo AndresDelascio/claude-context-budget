@@ -65,7 +65,7 @@ Without that session the saving moves from 29% to 18% as the assumed carry-over 
 Three results worth noting:
 
 1. **A checkpoint is not free.** A new session has to write its starting prompt to the cache again. That is why a 150k cap saves less than a 200k cap: it forces 1,211 restarts instead of 504.
-2. **Cheap tokens still add up.** A cache read costs 5% of a normal input token on Opus 5.5, yet cache reads are 56% of the total, because every call re-reads the whole history.
+2. **Cheap tokens still add up.** A cache read costs 5% of a normal input token on Opus 5.5, yet cache reads are 56% of the total, because every call re-reads the whole history. Both are published rules: Claude Code [sends the full conversation with every request](https://code.claude.com/docs/en/costs.md#why-usage-climbs-in-a-long-session), and a [cache read on Opus 5.5 is 0.05 times the input price](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pricing).
 3. **Subagent model choice was a small lever for me.** Subagents were 7.2% of my spend. Someone who delegates more will see a bigger number.
 
 ## 3. Measured before and after
@@ -141,7 +141,7 @@ For each main conversation it tracks a simulated prompt size. The simulated prom
 | Input | Kind | Value |
 |---|---|---|
 | Token counts per call | measured | from the `usage` field in the logs |
-| Prices | published | **prices.py**, read from Anthropic's pricing page on 2026-11-19 |
+| Prices | published | **prices.py**, read from [Anthropic's pricing page](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing) on 2026-11-19 |
 | Size of a fresh session | measured | median first prompt of your sessions (85k for me) |
 | Cache re-write of a fresh session | measured | median non-cached part of a first prompt (36k for me) |
 | Summary written at a checkpoint | assumed | 4,000 output tokens |
@@ -153,6 +153,7 @@ Limits:
 - It assumes the work after a checkpoint takes the same calls and the same output as before. It does not model quality.
 - Dollar figures use list prices. They are not a subscription bill.
 - The assumed values sit at the top of **simulate.py**.
+- It only models the cap. Other ways to shrink a session, such as `/clear` between tasks or Claude Code clearing old tool results ([costs docs](https://code.claude.com/docs/en/costs.md)), are not simulated, so their savings are neither counted nor separated from the cap's in the real logs.
 
 ### How much the two assumed values matter
 
@@ -267,7 +268,7 @@ Limits of the audit:
 
 ## 6. Delegate a job to a cheaper model
 
-A subagent started from a chat on the top model runs on the top model too, unless told otherwise. `/delegate` is a small skill that hands one job to one subagent on the cheapest model that fits, so the main chat never has to switch models.
+A subagent started from a chat on the top model runs on the top model too, unless told otherwise ([sub-agents docs](https://code.claude.com/docs/en/sub-agents.md#choose-a-model)). `/delegate` is a small skill that hands one job to one subagent on the cheapest model that fits, so the main chat never has to switch models.
 
 ```
 /delegate list every assumed constant in simulate.py
@@ -338,7 +339,7 @@ The same month of my calls at each model's list price (computed; assumes the tok
 | All 39,275 calls | US$974 | US$2,509 | US$5,019 | US$7,131 |
 | The 3,713 subagent calls | US$57 | US$176 | US$352 | US$545 |
 
-Haiku 5.5 is 1/20 the price of Sonnet 5.5 per token, but only 0.4x here. A Haiku prompt above 100,000 tokens pays 5 times the price, and 96% of my calls were above that (measured). `python analyze_usage.py` prints both rows at the end of its report.
+Haiku 5.5 is 1/20 the price of Sonnet 5.5 per token, but only 0.4x here. A Haiku prompt above 100,000 tokens pays 5 times the price ([long context pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing)), and 96% of my calls were above that (measured). `python analyze_usage.py` prints both rows at the end of its report.
 
 **GUIDE.md** turns this into a one-page guide: which model fits which job, and where to set it.
 
@@ -427,13 +428,14 @@ What the 6 runs show:
 
 How this fits the rest of the study:
 
-- The simulator in section 2 gives 35% for my month, where sessions ran far past 200,000 tokens for hundreds of calls. This task passed 200,000 only in its last third and stopped near 300,000. A compaction has a fixed price, and here there were too few calls after it to pay it back. The same effect is in **test_simulate.py** (`test_checkpoints_have_a_price`).
+- The simulator in section 2 gives 35% for my month, where sessions ran far past 200,000 tokens for hundreds of calls. This task passed 200,000 only in its last third and stopped near 300,000. A compaction has a fixed price, and here there were too few calls after it to pay it back. The same effect is in **test_scripts.py** (`test_checkpoints_have_a_price`).
 - It agrees with section 3: after I turned the cap on, cost per call fell on the models whose prompts were long and rose 14% on Sonnet 5.5, whose prompts were short.
 - So the controlled test supports the direction of the simulator (fewer tokens read, a price per compaction), but it does not confirm the 35%. That figure stays an estimate for long sessions.
 
 Limits:
 
 - One repo, one model, three runs per arm, and a task that ends near 300,000 tokens. It does not show what the cap does at 500,000 or more, which is where most of my spend was.
+- Three runs per arm can only show a large difference. With the spread measured here (pooled standard deviation US$0.29 a run), a two-sided t-test at 5% significance and 80% power needs a difference of about US$0.88 a run, 25% of arm E's mean, to detect it. Five runs per arm would bring that to US$0.59 (17%), ten runs to US$0.38 (11%) (computed). So "no difference" here means "no difference larger than about 25%".
 - All 32 checks passed everywhere, so they could not show a quality loss if there was one. The model can also re-read files after a compaction, which hides what it forgot.
 - The harness sends each prompt as a new `claude -p --resume` process, which re-writes about 9,000 tokens to the cache per prompt (measured once, in section 8). That raises the "writing to the cache" row in both arms.
 - The two arms of a round ran at the same time, so they may share cached prompt parts.
@@ -445,3 +447,13 @@ Run it yourself:
 ```
 python experiment.py --runs 3 --arms EF
 ```
+
+## Sources
+
+Anthropic's published docs, checked on 2026-11-20. Everything else in this study comes from my own logs and runs.
+
+- [Pricing](https://platform.claude.com/docs/en/about-claude/pricing): list prices, long context pricing for Haiku 5.5, fast mode pricing.
+- [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching): cache write and read prices, the 5-minute default lifetime.
+- [Manage costs](https://code.claude.com/docs/en/costs.md): why usage climbs in a long session, `/clear`, auto-compaction.
+- [Model configuration](https://code.claude.com/docs/en/model-config.md#set-the-auto-compact-window): the `autoCompactWindow` setting and `/autocompact`.
+- [Sub-agents](https://code.claude.com/docs/en/sub-agents.md#choose-a-model): a subagent runs on the main conversation's model by default.

@@ -210,6 +210,24 @@ def test_extract():
             assert "No API calls" in str(e)
 
 
+def test_sample_data():
+    """Both reports run end to end on the made-up data in sample/, chosen with --data."""
+    import sys
+    import analyze_usage
+    import simulate as sim
+    sample = str(Path(__file__).parent / "sample")
+    for main, extra, expect in ((analyze_usage.main, [], "TOTAL"), (analyze_usage.main, ["--split", "2026-01-08"], "Compactions"),
+                                (sim.main, [], "as logged")):
+        out, argv = io.StringIO(), sys.argv
+        sys.argv = ["x", "--data", sample, *extra]
+        try:
+            with contextlib.redirect_stdout(out):
+                main()
+        finally:
+            sys.argv = argv
+        assert expect in out.getvalue(), (main.__module__, extra)
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

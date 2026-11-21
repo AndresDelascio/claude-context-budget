@@ -117,6 +117,13 @@ python analyze_usage.py --split 2026-11-16  # cost per call and per typed prompt
 python audit_startup.py path/to/session.jsonl  # audit one chosen session
 ```
 
+No logs yet? Try the reports on the made-up data in **sample/**:
+
+```
+python analyze_usage.py --data sample
+python simulate.py --data sample
+```
+
 To install `/delegate` for all your projects, copy one folder (PowerShell):
 
 ```powershell
@@ -137,7 +144,7 @@ Then type, in any Claude Code chat:
 python test_scripts.py
 ```
 
-It runs the extractor, the price function, the simulator, the report helpers, the startup audit and the experiment's cost summary on hand-made inputs with known answers, and prints `ok`.
+It runs the extractor, the price function, the simulator, the report helpers, the startup audit and the experiment's cost summary on hand-made inputs with known answers, runs both reports on **sample/**, and prints `ok`.
 
 GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every pull request (**.github/workflows/test.yml**). The badge at the top shows the last result on `main`.
 
@@ -148,6 +155,7 @@ GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every 
 - The before and after comparison is not a controlled test: the work differs (a third as many calls per prompt), and the second period is four days.
 - One session was 50% of the month. Without it the simulated saving is 26%, not 35%.
 - The simulator assumes the same work after a checkpoint. It does not model answer quality. Its result moves from 38% to 27% as the assumed carry-over grows from 5,000 to 50,000 tokens.
+- The simulator only models the cap. `/clear` between tasks and Claude Code's clearing of old tool results also shrink a session, and their savings are not counted.
 - `/delegate` has two measured runs, both small jobs.
 - The controlled tests are one small repo, one model and three runs per set-up. The cap test ends near 300,000 tokens, so it does not show what the cap does in the much longer sessions where most of my spend was.
 
@@ -164,6 +172,7 @@ GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every 
 - **.claude/skills/delegate/SKILL.md** is the `/delegate` skill.
 - **experiment.py** runs the controlled test (it calls the model). **experiment_task.py** holds its prompts and checks.
 - **test_scripts.py** checks the scripts above.
+- **sample/** holds made-up usage data in the same format as **data/**: 16 invented sessions, not from anyone's logs. Its numbers mean nothing; it only lets you try the reports.
 - **CHANGELOG.md** lists what changed and when.
 - **CITATION.cff** says how to cite this study. GitHub shows it as **Cite this repository**.
 

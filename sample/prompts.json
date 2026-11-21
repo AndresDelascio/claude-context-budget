@@ -1,0 +1,18 @@
+{
+ "00000000-0000-4000-8000-000000000000": "Add a --verbose flag to the CLI",
+ "00000000-0000-4000-8000-000000000001": "Refactor the config loader",
+ "00000000-0000-4000-8000-000000000002": "Find where retries are handled",
+ "00000000-0000-4000-8000-000000000003": "Add a --verbose flag to the CLI",
+ "00000000-0000-4000-8000-000000000004": "Review api/routes.py for bugs",
+ "00000000-0000-4000-8000-000000000005": "Add pagination to the list endpoint",
+ "00000000-0000-4000-8000-000000000006": "Refactor the config loader",
+ "00000000-0000-4000-8000-000000000007": "Add a --verbose flag to the CLI",
+ "00000000-0000-4000-8000-000000000008": "Find where retries are handled",
+ "00000000-0000-4000-8000-000000000009": "Speed up the CSV import",
+ "00000000-0000-4000-8000-000000000010": "Find where retries are handled",
+ "00000000-0000-4000-8000-000000000011": "Add a --verbose flag to the CLI",
+ "00000000-0000-4000-8000-000000000012": "Fix the failing date parser test",
+ "00000000-0000-4000-8000-000000000013": "Fix the failing date parser test",
+ "00000000-0000-4000-8000-000000000014": "Refactor the config loader",
+ "00000000-0000-4000-8000-000000000015": "Fix the failing date parser test"
+}
