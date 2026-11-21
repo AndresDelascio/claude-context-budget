@@ -5,6 +5,7 @@ COMPUTED, and not a bill: on a subscription plan you pay a flat fee instead.
 
 Run:  python analyze_usage.py
       python analyze_usage.py --split 2026-11-16   (cost per call before and from that date)
+      python analyze_usage.py --data sample        (made-up data, to try it without logs)
 """
 import argparse
 import bisect
@@ -172,11 +173,12 @@ def before_after(rows, split, turns=()):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--split", metavar="YYYY-MM-DD", help="only print cost per call before and from this UTC date")
+    ap.add_argument("--data", type=Path, default=DATA, metavar="DIR", help="folder with usage.csv (default: data)")
     args = ap.parse_args()
-    rows = load()
+    rows = load(args.data)
     if args.split:
-        return before_after(rows, args.split, json.loads((DATA / "turns.json").read_text(encoding="utf-8")))
-    prompts = json.loads((DATA / "prompts.json").read_text(encoding="utf-8"))
+        return before_after(rows, args.split, json.loads((args.data / "turns.json").read_text(encoding="utf-8")))
+    prompts = json.loads((args.data / "prompts.json").read_text(encoding="utf-8"))
     total = sum(r["w"] for r in rows)
     print(f"TOTAL {usd(total)} API-equivalent, {len(rows)} calls | {mix(rows)}")
 

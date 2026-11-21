@@ -13,11 +13,14 @@ Token counts are MEASURED (from your logs). Dollars are COMPUTED at list prices
 Run:  python simulate.py            (after python extract_usage.py)
       python simulate.py --since 2026-11-12 --cap 200 --trim-startup 30
       python simulate.py --sensitivity --cap 200   (how much the two assumed values matter)
+      python simulate.py --data sample             (made-up data, to try it without logs)
 """
 import argparse
 from statistics import median
 
-from analyze_usage import load
+from pathlib import Path
+
+from analyze_usage import DATA, load
 from prices import PRICES, cost_parts
 
 # --- ASSUMED values (not measured). Change them here. ---
@@ -129,9 +132,10 @@ def main():
                     help="leave out the N costliest sessions, to see how much the result depends on them")
     ap.add_argument("--sensitivity", action="store_true",
                     help="only print how the saving of each --cap moves with the two assumed checkpoint values")
+    ap.add_argument("--data", type=Path, default=DATA, metavar="DIR", help="folder with usage.csv (default: data)")
     args = ap.parse_args()
 
-    every = load()
+    every = load(args.data)
     rows = [r for r in every if args.since <= r["ts"] < args.until]  # ISO timestamps compare as text
     if not rows:
         raise SystemExit("no calls in that date range")

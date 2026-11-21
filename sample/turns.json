@@ -1,0 +1,776 @@
+[
+ {
+  "ts": "2026-01-01T11:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-01T11:11:03.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-01T11:17:08.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-01T11:30:30.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-01T11:48:06.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-01T12:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000001",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-01T12:01:50.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-01T12:08:02.000Z",
+  "session": "00000000-0000-4000-8000-000000000001",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-01T12:19:20.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-01T12:26:05.000Z",
+  "session": "00000000-0000-4000-8000-000000000001",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-01T12:34:54.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-01T12:43:42.000Z",
+  "session": "00000000-0000-4000-8000-000000000001",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-01T12:46:27.000Z",
+  "session": "00000000-0000-4000-8000-000000000000",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-01T12:53:34.000Z",
+  "session": "00000000-0000-4000-8000-000000000001",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-01T13:00:42.000Z",
+  "session": "00000000-0000-4000-8000-000000000001",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-02T09:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-02T09:18:22.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-02T09:32:14.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-02T09:43:19.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-02T09:58:47.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-02T10:14:22.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-02T10:24:09.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-02T10:33:16.000Z",
+  "session": "00000000-0000-4000-8000-000000000002",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-03T10:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-03T10:07:54.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-03T10:29:58.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-03T10:46:16.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-03T10:54:19.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-03T11:05:14.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-03T11:21:35.000Z",
+  "session": "00000000-0000-4000-8000-000000000003",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-04T12:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000004",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-04T12:11:04.000Z",
+  "session": "00000000-0000-4000-8000-000000000004",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-04T12:27:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000004",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-04T12:41:03.000Z",
+  "session": "00000000-0000-4000-8000-000000000004",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-04T12:55:50.000Z",
+  "session": "00000000-0000-4000-8000-000000000004",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-04T13:03:40.000Z",
+  "session": "00000000-0000-4000-8000-000000000004",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-05T14:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000005",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-05T14:10:58.000Z",
+  "session": "00000000-0000-4000-8000-000000000005",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-05T14:19:17.000Z",
+  "session": "00000000-0000-4000-8000-000000000005",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-05T14:38:30.000Z",
+  "session": "00000000-0000-4000-8000-000000000005",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-05T14:53:46.000Z",
+  "session": "00000000-0000-4000-8000-000000000005",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-05T15:08:05.000Z",
+  "session": "00000000-0000-4000-8000-000000000005",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-06T09:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-06T09:14:33.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-06T09:22:32.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-06T09:29:14.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-06T09:39:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-06T09:49:13.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-06T10:01:16.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-06T10:08:51.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-06T10:19:50.000Z",
+  "session": "00000000-0000-4000-8000-000000000006",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-07T11:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-07T11:20:49.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-07T11:37:57.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-07T11:49:42.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-07T12:06:09.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-07T12:23:41.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-07T12:35:11.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-07T12:50:09.000Z",
+  "session": "00000000-0000-4000-8000-000000000007",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-08T10:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-08T10:12:42.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-08T10:22:38.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-08T10:35:50.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-08T10:43:34.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-08T10:49:52.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-08T11:02:33.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-08T11:09:11.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-08T11:25:57.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-08T11:33:51.000Z",
+  "session": "00000000-0000-4000-8000-000000000008",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-08T12:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-08T12:09:34.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-08T12:24:42.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-08T12:32:03.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-08T12:48:10.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-08T13:02:49.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-08T13:10:31.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-08T13:27:32.000Z",
+  "session": "00000000-0000-4000-8000-000000000009",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-09T14:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-09T14:13:24.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-09T14:26:58.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-09T14:38:09.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-09T14:45:01.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-09T14:50:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-09T15:05:36.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-09T15:25:22.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-09T15:35:39.000Z",
+  "session": "00000000-0000-4000-8000-000000000010",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-10T09:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-10T09:16:42.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-10T09:23:48.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-10T09:38:29.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-10T09:57:03.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-10T10:11:55.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-10T10:23:59.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-10T10:35:38.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-10T10:44:59.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-10T10:54:21.000Z",
+  "session": "00000000-0000-4000-8000-000000000011",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-11T11:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-11T11:10:03.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-11T11:20:58.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-11T11:31:39.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-11T11:39:22.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-11T11:49:09.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-11T12:03:24.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-11T12:13:27.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-11T12:23:02.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-11T12:28:10.000Z",
+  "session": "00000000-0000-4000-8000-000000000012",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-12T09:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-12T09:11:58.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-12T09:31:28.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-12T09:51:16.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-12T10:03:59.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-12T10:23:16.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 35,
+  "text": "Add pagination to the list endpoint"
+ },
+ {
+  "ts": "2026-01-12T10:30:29.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-12T10:47:33.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-12T11:08:52.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-12T11:22:29.000Z",
+  "session": "00000000-0000-4000-8000-000000000013",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ },
+ {
+  "ts": "2026-01-13T11:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-13T11:17:23.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-13T11:27:41.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-13T11:34:07.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 26,
+  "text": "Refactor the config loader"
+ },
+ {
+  "ts": "2026-01-13T11:52:08.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-13T12:02:35.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-13T12:20:37.000Z",
+  "session": "00000000-0000-4000-8000-000000000014",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-14T09:00:00.000Z",
+  "session": "00000000-0000-4000-8000-000000000015",
+  "chars": 32,
+  "text": "Fix the failing date parser test"
+ },
+ {
+  "ts": "2026-01-14T09:09:59.000Z",
+  "session": "00000000-0000-4000-8000-000000000015",
+  "chars": 33,
+  "text": "Write docs for the export command"
+ },
+ {
+  "ts": "2026-01-14T09:26:34.000Z",
+  "session": "00000000-0000-4000-8000-000000000015",
+  "chars": 29,
+  "text": "Review api/routes.py for bugs"
+ },
+ {
+  "ts": "2026-01-14T09:45:03.000Z",
+  "session": "00000000-0000-4000-8000-000000000015",
+  "chars": 23,
+  "text": "Speed up the CSV import"
+ },
+ {
+  "ts": "2026-01-14T09:59:26.000Z",
+  "session": "00000000-0000-4000-8000-000000000015",
+  "chars": 30,
+  "text": "Find where retries are handled"
+ },
+ {
+  "ts": "2026-01-14T10:05:46.000Z",
+  "session": "00000000-0000-4000-8000-000000000015",
+  "chars": 31,
+  "text": "Add a --verbose flag to the CLI"
+ }
+]
