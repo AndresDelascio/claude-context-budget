@@ -36,6 +36,22 @@ Contents:
 
 I am on a subscription, so US$5,179 is not what I paid. It is what the same tokens cost at list prices, which makes sessions and models comparable.
 
+### Checked against ccusage
+
+[ccusage](https://github.com/ccusage/ccusage) is an open-source tool that reads the same logs. On 2026-11-20 I ran its Claude report (version 20.0.51, `--offline`, so it uses its built-in price list) and compared it day by day with **data/usage.csv**.
+
+| Oct 19 to Nov 18, 39,053 calls | This repo | ccusage | Difference |
+|---|---|---|---|
+| Input tokens | 654,273 | 654,277 | +4 |
+| Output tokens | 36,468,658 | 36,469,301 | +643 |
+| Cache write tokens | 179,087,185 | 179,094,824 | +7,639 |
+| Cache read tokens | 14,505,982,313 | 14,505,986,296 | +3,983 |
+| US$ at list prices (computed) | 5,150.83 | 5,150.83 | 0.00 |
+
+- The two agree to within 0.01% on every token type and to the cent on dollars. Each Claude model matched on its own as well.
+- Days are local dates (US Eastern), as ccusage groups them. Nov 19 is left out: my extract stopped at 18:42 UTC that day, and ccusage also counted the calls logged after.
+- Its default report also includes other coding tools' logs (GPT models, here). Its `claude` report, used above, does not.
+
 ## 2. What-if simulator
 
 `simulate.py` replays the same calls under different habits:
@@ -450,8 +466,9 @@ python experiment.py --runs 3 --arms EF
 
 ## Sources
 
-Anthropic's published docs, checked on 2026-11-20. Everything else in this study comes from my own logs and runs.
+Anthropic's published docs, checked on 2026-11-20, and one outside tool. Everything else in this study comes from my own logs and runs.
 
+- [ccusage](https://github.com/ccusage/ccusage) 20.0.51: an independent count of the same logs (section 1).
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing): list prices, long context pricing for Haiku 5.5, fast mode pricing.
 - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching): cache write and read prices, the 5-minute default lifetime.
 - [Manage costs](https://code.claude.com/docs/en/costs.md): why usage climbs in a long session, `/clear`, auto-compaction.

@@ -19,7 +19,7 @@ One month of my real usage, with and without the one setting this study points t
 | Real logs, cost per call on Sonnet 5.5 (computed) | US$0.036 | US$0.041 | **none: 14% more** |
 | Controlled test, one 35-prompt task on Sonnet 5.5 that ends near 300k tokens (median of 3 runs) | US$3.26 | US$3.39 | **none** (runs overlap) |
 
-- "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices.
+- "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices. An open-source tool, ccusage, counts the same tokens to within 0.01% ([STUDY.md](STUDY.md), section 1).
 - The first three rows replay those same calls with the cap, so they rest on the simulator's stated assumptions. One session was 50% of the month, so the third row shows the result without it.
 - The last three rows are what really happened after I turned the setting on: four days of data, not a controlled test. The cap helps where prompts were long. My Opus 5.5 prompts had a median of 370k tokens before, Fable 5.2 199k, and Sonnet 5.5 111k, which was already under the cap (measured).
 - Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work.
