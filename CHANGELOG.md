@@ -4,6 +4,7 @@
 - STUDY.md cites Anthropic's docs where a finding rests on a published rule (prices, prompt caching, subagent model, the cap setting), with a Sources list at the end.
 - STUDY.md section 9 states what 3 runs per arm could detect: a difference of about 25% (computed). Also fixed a stale `test_simulate.py` name there.
 - README and STUDY.md say the simulator models only the cap, not `/clear` or clearing old tool results.
+- STUDY.md section 1: checked against ccusage 20.0.51. Same tokens to within 0.01% and the same US$5,150.83 for Oct 19 to Nov 18.
 - Added **sample/**, made-up usage data, and a `--data` flag on `analyze_usage.py` and `simulate.py` to read it. A test runs both reports on it.
 - Added a GitHub Actions check (`.github/workflows/test.yml`): the tests run on Ubuntu and Windows with Python 3.9 on every pull request and push to `main`.
 - Renamed `test_simulate.py` to `test_scripts.py`: it now checks every script, not just the simulator.
