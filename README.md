@@ -1,5 +1,8 @@
 # claude-context-budget
 
+[![tests](https://github.com/AndresDelascio/claude-context-budget/actions/workflows/test.yml/badge.svg)](https://github.com/AndresDelascio/claude-context-budget/actions/workflows/test.yml)
+[![licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
+
 A study of where my Claude Code tokens went over one month, and the small Python tool that measured it, which you can run on your own logs.
 
 ## The result
@@ -131,10 +134,12 @@ Then type, in any Claude Code chat:
 ## Check the code
 
 ```
-python test_simulate.py
+python test_scripts.py
 ```
 
-It runs the price function, the simulator, the report helpers, the startup audit and the experiment's cost summary on hand-made inputs with known answers, and prints `ok`.
+It runs the extractor, the price function, the simulator, the report helpers, the startup audit and the experiment's cost summary on hand-made inputs with known answers, and prints `ok`.
+
+GitHub runs the same check on Ubuntu and Windows with Python 3.9 on every pull request (**.github/workflows/test.yml**). The badge at the top shows the last result on `main`.
 
 ## Limits
 
@@ -158,8 +163,9 @@ It runs the price function, the simulator, the report helpers, the startup audit
 - **audit_startup.py** sizes each part of a session's first prompt.
 - **.claude/skills/delegate/SKILL.md** is the `/delegate` skill.
 - **experiment.py** runs the controlled test (it calls the model). **experiment_task.py** holds its prompts and checks.
-- **test_simulate.py** checks the scripts above.
+- **test_scripts.py** checks the scripts above.
 - **CHANGELOG.md** lists what changed and when.
+- **CITATION.cff** says how to cite this study. GitHub shows it as **Cite this repository**.
 
 ## Next
 

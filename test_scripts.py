@@ -1,4 +1,4 @@
-"""Checks for prices.py and simulate.py on hand-made calls. Run:  python test_simulate.py"""
+"""Checks for every script in this repo on hand-made inputs with known answers. Run:  python test_scripts.py"""
 import contextlib
 import csv
 import io

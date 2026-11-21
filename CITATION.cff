@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this study or its scripts, please cite it as below."
+type: software
+title: "claude-context-budget: where one month of Claude Code tokens went"
+abstract: >-
+  A measured study of one person's Claude Code token usage over one month
+  (39,275 API calls), with stdlib-only Python scripts that read local logs,
+  price the calls at API list prices and estimate what a context cap would save.
+authors:
+  - family-names: Delascio
+    given-names: Andres
+repository-code: "https://github.com/AndresDelascio/claude-context-budget"
+license: MIT
+date-released: 2026-11-19  # first public on GitHub
+keywords:
+  - claude-code
+  - llm
+  - token-usage
+  - prompt-caching
