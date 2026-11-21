@@ -139,7 +139,7 @@ python test_scripts.py
 
 It runs the extractor, the price function, the simulator, the report helpers, the startup audit and the experiment's cost summary on hand-made inputs with known answers, and prints `ok`.
 
-GitHub runs the same check on Ubuntu and Windows with Python 3.9 on every pull request (**.github/workflows/test.yml**). The badge at the top shows the last result on `main`.
+GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every pull request (**.github/workflows/test.yml**). The badge at the top shows the last result on `main`.
 
 ## Limits
 
