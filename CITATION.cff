@@ -11,7 +11,8 @@ authors:
     given-names: Andres
 repository-code: "https://github.com/AndresDelascio/claude-context-budget"
 license: MIT
-date-released: 2026-11-19  # first public on GitHub
+version: "1.0"
+date-released: 2026-11-20
 keywords:
   - claude-code
   - llm
