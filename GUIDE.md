@@ -42,6 +42,8 @@ The same month of my calls, priced on each model (computed; assumes the token co
 | All 39,275 calls | US$974 | US$2,509 | US$5,019 | US$7,131 |
 | The 3,713 subagent calls | US$57 | US$176 | US$352 | US$545 |
 
+![The same month of calls priced on each model: Haiku 5.5 US$974, Sonnet 5.5 US$2,509, Opus 5.5 US$5,019, Fable 5.2 US$7,131, as logged US$5,179](figures/cost_by_model.svg)
+
 As logged, on the mix of models I really used, the month was US$5,179 (computed). 96% of my calls had a prompt above 100,000 tokens (measured), which is why Haiku comes out at 0.4x Sonnet here and not 1/20.
 
 Reproduce the two rows on your own logs with the last lines of:

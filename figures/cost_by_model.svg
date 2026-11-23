@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 308" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="The same month on each model: Haiku 5.5 US$974, Sonnet 5.5 US$2,509, Opus 5.5 US$5,019, Fable 5.2 US$7,131; as logged US$5,179">
+  <!-- Numbers: STUDY.md section 7 (analyze_usage.py), computed at list prices. -->
+  <text x="0.0" y="22.0" font-size="17" text-anchor="start" fill="#8b949e" font-weight="600">The same month of calls, priced on each model</text>
+  <text x="0.0" y="44.0" font-size="13" text-anchor="start" fill="#8b949e">39,275 calls at list prices (computed). Assumes the token counts would not change with the model.</text>
+  <text x="110.0" y="83.0" font-size="14" text-anchor="end" fill="#8b949e" font-weight="600">Haiku 5.5</text>
+  <rect x="122.0" y="66.0" width="71.0" height="24.0" rx="3" fill="#0969da" fill-opacity="1.0"/>
+  <text x="201.0" y="83.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">US$974</text>
+  <text x="110.0" y="119.0" font-size="14" text-anchor="end" fill="#8b949e" font-weight="600">Sonnet 5.5</text>
+  <rect x="122.0" y="102.0" width="183.0" height="24.0" rx="3" fill="#0969da" fill-opacity="1.0"/>
+  <text x="313.0" y="119.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">US$2,509</text>
+  <text x="110.0" y="155.0" font-size="14" text-anchor="end" fill="#8b949e" font-weight="600">Opus 5.5</text>
+  <rect x="122.0" y="138.0" width="366.0" height="24.0" rx="3" fill="#0969da" fill-opacity="1.0"/>
+  <text x="496.0" y="155.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">US$5,019</text>
+  <text x="110.0" y="191.0" font-size="14" text-anchor="end" fill="#8b949e" font-weight="600">Fable 5.2</text>
+  <rect x="122.0" y="174.0" width="520.0" height="24.0" rx="3" fill="#0969da" fill-opacity="1.0"/>
+  <text x="650.0" y="191.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">US$7,131</text>
+  <text x="110.0" y="237.0" font-size="14" text-anchor="end" fill="#8b949e" font-weight="600">As logged</text>
+  <rect x="122.0" y="220.0" width="377.7" height="24.0" rx="3" fill="#8b949e" fill-opacity="1.0"/>
+  <text x="507.7" y="237.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">US$5,179  (my real mix of models)</text>
+  <line x1="0.0" y1="212.0" x2="760.0" y2="212.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <text x="0.0" y="286.0" font-size="12" text-anchor="start" fill="#8b949e">Haiku is cheap per token but pays 5 times the price above 100k tokens, and 96% of my calls were above that.</text>
+  <text x="0.0" y="304.0" font-size="12" text-anchor="start" fill="#8b949e">So it came out at only 0.4 times Sonnet here, not 1/20.</text>
+</svg>

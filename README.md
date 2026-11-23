@@ -5,9 +5,29 @@
 
 A study of where my Claude Code tokens went over one month, and the small Python tool that measured it, which you can run on your own logs.
 
+## In short
+
+**Claude Code's usage is counted in tokens, and it re-sends the whole conversation on every step.** So the longer a session grows, the more each step costs.
+
+I read one month of my own logs (39,275 API calls) to see where my usage went. Long sessions, not the choice of model, drove most of it. One built-in setting caps a session at 200,000 tokens: past that, Claude summarises the chat so far and carries on from the summary. Replaying my month with that cap cuts its cost at list prices by an estimated 35%.
+
+![Illustration: without a cap the conversation re-read on each step keeps growing past 400k tokens; with a 200k cap Claude summarises and the bars drop back](figures/why_long_sessions_cost_more.svg)
+
+Numbers are marked measured (read from the logs), computed (tokens times list prices, not a bill) or estimated (rests on a stated assumption). The scripts run on your own logs with Python 3.9 or newer, no installs, and nothing is uploaded ([Run it on your own logs](#run-it-on-your-own-logs)).
+
+## The question
+
+My usage limit kept running out. The usual advice is "pick a cheaper model". I wanted to know if that was really the problem, so I read my own logs: 39,275 API calls in 90 sessions, Oct 19 to Nov 19, 2026.
+
+The answer was no. The model mattered less than **how long each session had grown**. Claude re-sends the whole conversation on every step, so a session at 400k tokens pays for those 400k tokens again on each tool call.
+
+![Share of main-conversation spend by prompt size: 2% at 50k to 100k tokens, 16% at 100k to 200k, 23% at 200k to 400k, 59% over 400k](figures/spend_by_prompt_size.svg)
+
 ## The result
 
 One month of my real usage, with and without the one setting this study points to (a 200k cap on the context):
+
+![What the 200k cap saved, test by test: 35%, 39% and 26% in the simulator; 45%, 7% and 14% more per call in the real logs on Opus 5.5, Fable 5.2 and Sonnet 5.5; no difference in the controlled test](figures/saving_by_test.svg)
 
 | | Without | With | Saved |
 |---|---|---|---|
@@ -26,14 +46,6 @@ One month of my real usage, with and without the one setting this study points t
 - The last row is a controlled test: the same scripted task with the cap off and on. The cap cut the tokens re-read by 22%, but on a task that only just passes 200k the two compactions cost as much as they saved. So the 35% is an estimate for long sessions like mine, not a promise for every task.
 - Dollars are list prices, not a bill. I am on a subscription, so for me the saving is usage, not money. I assume the usage limit counts tokens roughly the way the prices do, so read the same percentages as usage.
 
-## The question
-
-My usage limit kept running out. The usual advice is "pick a cheaper model". I wanted to know if that was really the problem, so I read my own logs: 39,275 API calls in 90 sessions, Oct 19 to Nov 19, 2026.
-
-The answer was no. The model mattered less than **how long each session had grown**. Claude re-sends the whole conversation on every step, so a session at 400k tokens pays for those 400k tokens again on each tool call.
-
-![Share of main-conversation spend by prompt size: 2% at 50k to 100k tokens, 16% at 100k to 200k, 23% at 200k to 400k, 59% over 400k](spend_by_prompt_size.svg)
-
 ## How to read the numbers
 
 - **Measured:** token, call and character counts read from the logs.
@@ -51,6 +63,10 @@ The answer was no. The model mattered less than **how long each session had grow
 | 5 | The cheapest model is not always cheap | Haiku 5.5 pays 5 times the price above 100k tokens. 96% of my calls were above that | price published, share measured |
 | 6 | On a small task, a project file or a code map saved nothing | Same 15-prompt task, 3 runs each: US$0.86 with nothing, US$0.93 with a `CLAUDE.md`, US$0.89 with a code map too. All passed the same 18 checks | controlled test, tokens measured, medians |
 | 7 | On a task that only just passes 200k, the cap saved tokens but not money | Same 35-prompt task, 3 runs each: US$3.26 without the cap, US$3.39 with it. 22% fewer prompt tokens, two compactions per run, all 32 checks passed both ways | controlled test, tokens measured, medians |
+
+![What fills a new session before you type: 89,428 tokens, 54% of it tool definitions and 2% my own CLAUDE.md](figures/startup_prompt.svg)
+
+![Controlled tests, every run: in test 1 set-ups A, B and C overlap and D cost more in these runs; in test 2 the runs with and without the cap overlap](figures/controlled_tests.svg)
 
 Three results surprised me:
 
@@ -73,13 +89,15 @@ In order of effect on my usage:
 | 5. Give subagents a cheaper model | The `/delegate` skill in this repo | About 4 times cheaper for one job. Subagents were only 7.2% of my spend, so a small lever for me |
 | 6. Pick the model on purpose | **[GUIDE.md](GUIDE.md)**, one page | The same month costs US$2,509 on Sonnet 5.5 and US$7,131 on Fable 5.2 (computed, assumes equal tokens) |
 
+![The same month of calls priced on each model: Haiku 5.5 US$974, Sonnet 5.5 US$2,509, Opus 5.5 US$5,019, Fable 5.2 US$7,131, as logged US$5,179](figures/cost_by_model.svg)
+
 I use steps 1, 3 and 4 every day.
 
 Not on this list: writing a project file or building a code map to save tokens. On a small task neither changed the cost (finding 6). A short `CLAUDE.md` is still useful for telling Claude things it cannot see in the code.
 
 ## How it works
 
-[![Map of the repo: Claude Code logs are read by extract_usage.py into a local data folder, then analyze_usage.py, simulate.py and audit_startup.py print the baseline report, the what-if estimate and the startup breakdown](how_it_works.png)](how_it_works.pdf)
+[![Map of the repo: Claude Code logs are read by extract_usage.py into a local data folder, then analyze_usage.py, simulate.py and audit_startup.py print the baseline report, the what-if estimate and the startup breakdown](figures/how_it_works.png)](figures/how_it_works.pdf)
 
 Click the image for the PDF.
 
@@ -163,7 +181,7 @@ GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every 
 
 - **STUDY.md** is the full write-up: method, tables and limits for every finding.
 - **GUIDE.md** is the one-page guide for picking a model and an effort level.
-- **how_it_works.png** and **how_it_works.pdf** are the one-page map of the repo. **how_it_works.html** is their source.
+- **figures/** holds the charts and the one-page map of the repo (**how_it_works.png** and **.pdf**, made from **how_it_works.html**). Each chart is a small SVG file whose numbers come from STUDY.md, noted in a comment at its top.
 - **extract_usage.py** reads the Claude Code logs and writes one row per API call to **data/usage.csv**.
 - **prices.py** holds the price table and the function that turns tokens into dollars. It lists six models. Calls on any other model are left out, and the scripts say how many.
 - **analyze_usage.py** prints the baseline report and, with `--split`, the before and after comparison.
