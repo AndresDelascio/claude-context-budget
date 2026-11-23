@@ -34,6 +34,8 @@ Contents:
 | Subagents | 7.2% of spend | computed |
 | Prompt size of a brand-new session | 85k tokens (median) | measured |
 
+![Share of main-conversation spend by prompt size: 2% at 50k to 100k tokens, 16% at 100k to 200k, 23% at 200k to 400k, 59% over 400k](figures/spend_by_prompt_size.svg)
+
 I am on a subscription, so US$5,179 is not what I paid. It is what the same tokens cost at list prices, which makes sessions and models comparable.
 
 ### Checked against ccusage
@@ -54,7 +56,9 @@ I am on a subscription, so US$5,179 is not what I paid. It is what the same toke
 
 ## 2. What-if simulator
 
-`simulate.py` replays the same calls under different habits:
+`simulate.py` replays the same calls under different habits. The idea, drawn as a picture (an illustration, not data):
+
+![Illustration: without a cap the conversation re-read on each step keeps growing past 400k tokens; with a 200k cap Claude summarises and the bars drop back](figures/why_long_sessions_cost_more.svg)
 
 | Habit | Cost | Saved |
 |---|---|---|
@@ -210,6 +214,8 @@ The 20,000 value is supported by the real compactions in section 3: the median p
 | Subagent types list | 4,502 | 2% | 1,600 |
 | **Total** | 252,186 | 100% | **89,428 (measured)** |
 
+![What fills a new session before you type: 89,428 tokens, 54% of it tool definitions and 2% my own CLAUDE.md](figures/startup_prompt.svg)
+
 Characters are measured. The total of 89,428 tokens is measured. Tokens per part are estimated: the measured total is shared out by characters.
 
 What stands out:
@@ -355,6 +361,8 @@ The same month of my calls at each model's list price (computed; assumes the tok
 | All 39,275 calls | US$974 | US$2,509 | US$5,019 | US$7,131 |
 | The 3,713 subagent calls | US$57 | US$176 | US$352 | US$545 |
 
+![The same month of calls priced on each model: Haiku 5.5 US$974, Sonnet 5.5 US$2,509, Opus 5.5 US$5,019, Fable 5.2 US$7,131, as logged US$5,179](figures/cost_by_model.svg)
+
 Haiku 5.5 is 1/20 the price of Sonnet 5.5 per token, but only 0.4x here. A Haiku prompt above 100,000 tokens pays 5 times the price ([long context pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing)), and 96% of my calls were above that (measured). `python analyze_usage.py` prints both rows at the end of its report.
 
 **GUIDE.md** turns this into a one-page guide: which model fits which job, and where to set it.
@@ -382,6 +390,10 @@ Quality is checked two ways: click's own test suite, and 18 checks in **experime
 | D, file and handoff | 1.11 | 1.06 | 1.31 | 1.11 | 71 | 83,394 | 18/18, 3 times | 0 |
 
 Tokens are measured from the session transcripts. Dollars are computed at list prices, and they equal the cost Claude Code itself reported in all 12 runs. Writing the project file took one extra session of US$0.13, not included above. The whole test used US$12.35.
+
+Every run of this test and of section 9, one dot per run:
+
+![Controlled tests, every run: in test 1 set-ups A, B and C overlap and D cost more in these runs; in test 2 the runs with and without the cap overlap](figures/controlled_tests.svg)
 
 What the 12 runs show:
 

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 364" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Controlled tests: in test 1 set-ups A, B and C overlap and D cost more in these runs (medians US$0.86, 0.93, 0.89, 1.11); in test 2 no cap and 200k cap overlap (US$3.26 and US$3.39)">
+  <!-- Numbers: STUDY.md tables in sections 8 and 9 (experiment.py). -->
+  <text x="0.0" y="22.0" font-size="17" text-anchor="start" fill="#8b949e" font-weight="600">Controlled tests: every run, in US$</text>
+  <text x="0.0" y="44.0" font-size="13" text-anchor="start" fill="#8b949e">Each dot is one run. The line is the median. Dots that overlap mean no clear difference.</text>
+  <text x="0.0" y="76.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">Test 1: 15 prompts, under 110k tokens. A, B and C overlap; D cost more here (a hint, 3 runs)</text>
+  <text x="210.0" y="105.0" font-size="13" text-anchor="end" fill="#8b949e">A  nothing added</text>
+  <line x1="222.0" y1="100.0" x2="622.0" y2="100.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <circle cx="396.5" cy="100.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="265.6" cy="100.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="251.1" cy="100.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <line x1="265.6" y1="90.0" x2="265.6" y2="110.0" stroke="#57606a" stroke-width="3"/>
+  <text x="632.0" y="105.0" font-size="13" text-anchor="start" fill="#8b949e" font-weight="600">median 0.86</text>
+  <text x="210.0" y="135.0" font-size="13" text-anchor="end" fill="#8b949e">B  CLAUDE.md</text>
+  <line x1="222.0" y1="130.0" x2="622.0" y2="130.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <circle cx="316.5" cy="130.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="549.3" cy="130.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="287.5" cy="130.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <line x1="316.5" y1="120.0" x2="316.5" y2="140.0" stroke="#57606a" stroke-width="3"/>
+  <text x="632.0" y="135.0" font-size="13" text-anchor="start" fill="#8b949e" font-weight="600">median 0.93</text>
+  <text x="210.0" y="165.0" font-size="13" text-anchor="end" fill="#8b949e">C  CLAUDE.md and code map</text>
+  <line x1="222.0" y1="160.0" x2="622.0" y2="160.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <circle cx="520.2" cy="160.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="287.5" cy="160.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="243.8" cy="160.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <line x1="287.5" y1="150.0" x2="287.5" y2="170.0" stroke="#57606a" stroke-width="3"/>
+  <text x="632.0" y="165.0" font-size="13" text-anchor="start" fill="#8b949e" font-weight="600">median 0.89</text>
+  <text x="210.0" y="195.0" font-size="13" text-anchor="end" fill="#8b949e">D  CLAUDE.md and handoff</text>
+  <line x1="222.0" y1="190.0" x2="622.0" y2="190.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <circle cx="447.5" cy="190.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="411.1" cy="190.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="592.9" cy="190.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <line x1="447.5" y1="180.0" x2="447.5" y2="200.0" stroke="#57606a" stroke-width="3"/>
+  <text x="632.0" y="195.0" font-size="13" text-anchor="start" fill="#8b949e" font-weight="600">median 1.11</text>
+  <text x="222.0" y="218.0" font-size="11" text-anchor="middle" fill="#8b949e">0.80</text>
+  <text x="294.7" y="218.0" font-size="11" text-anchor="middle" fill="#8b949e">0.90</text>
+  <text x="367.5" y="218.0" font-size="11" text-anchor="middle" fill="#8b949e">1.00</text>
+  <text x="440.2" y="218.0" font-size="11" text-anchor="middle" fill="#8b949e">1.10</text>
+  <text x="512.9" y="218.0" font-size="11" text-anchor="middle" fill="#8b949e">1.20</text>
+  <text x="585.6" y="218.0" font-size="11" text-anchor="middle" fill="#8b949e">1.30</text>
+  <text x="0.0" y="250.0" font-size="14" text-anchor="start" fill="#8b949e" font-weight="600">Test 2: 35 prompts, passes 200k tokens. With and without the cap overlap</text>
+  <text x="210.0" y="279.0" font-size="13" text-anchor="end" fill="#8b949e">E  no cap</text>
+  <line x1="222.0" y1="274.0" x2="622.0" y2="274.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <circle cx="600.7" cy="274.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="254.0" cy="274.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="248.7" cy="274.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <line x1="254.0" y1="264.0" x2="254.0" y2="284.0" stroke="#57606a" stroke-width="3"/>
+  <text x="632.0" y="279.0" font-size="13" text-anchor="start" fill="#8b949e" font-weight="600">median 3.26</text>
+  <text x="210.0" y="309.0" font-size="13" text-anchor="end" fill="#8b949e">F  200k cap</text>
+  <line x1="222.0" y1="304.0" x2="622.0" y2="304.0" stroke="#8b949e" stroke-width="0.5" stroke-dasharray="2 4"/>
+  <circle cx="323.3" cy="304.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="419.3" cy="304.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <circle cx="248.7" cy="304.0" r="6" fill="#8250df" fill-opacity="0.7"/>
+  <line x1="323.3" y1="294.0" x2="323.3" y2="314.0" stroke="#57606a" stroke-width="3"/>
+  <text x="632.0" y="309.0" font-size="13" text-anchor="start" fill="#8b949e" font-weight="600">median 3.39</text>
+  <text x="222.0" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.20</text>
+  <text x="275.3" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.30</text>
+  <text x="328.7" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.40</text>
+  <text x="382.0" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.50</text>
+  <text x="435.3" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.60</text>
+  <text x="488.7" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.70</text>
+  <text x="542.0" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.80</text>
+  <text x="595.3" y="332.0" font-size="11" text-anchor="middle" fill="#8b949e">3.90</text>
+  <text x="0.0" y="356.0" font-size="12" text-anchor="start" fill="#8b949e" font-style="italic">US$ at list prices, computed from measured tokens. Every run passed every check. Sonnet 5.5 in all runs.</text>
+</svg>

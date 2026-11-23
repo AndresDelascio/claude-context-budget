@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-23
+- README: a new **In short** section at the top explains the study in three sentences and one picture.
+- Added five charts in **figures/**: the saving per test, what fills a new session, the same month on each model, every run of the controlled tests, and an illustration of why long sessions cost more. They also appear in STUDY.md and GUIDE.md next to their tables.
+- Moved the existing chart and the repo map (**how_it_works.***) into **figures/**.
+
 ## 2026-11-20
 - STUDY.md cites Anthropic's docs where a finding rests on a published rule (prices, prompt caching, subagent model, the cap setting), with a Sources list at the end.
 - STUDY.md section 9 states what 3 runs per arm could detect: a difference of about 25% (computed). Also fixed a stale `test_simulate.py` name there.
