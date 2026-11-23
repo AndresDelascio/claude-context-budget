@@ -5,9 +5,22 @@
 
 A study of where my Claude Code tokens went over one month, and the small Python tool that measured it, which you can run on your own logs.
 
+## In 30 seconds
+
+![Every step of a Claude Code chat re-sends the whole chat, so 76% of my spend was on calls with a prompt over 200k tokens. A 200k cap on the context saves an estimated 35% (27% to 38%) in a replay of my month.](overview.svg)
+
+- Claude Code sends the whole conversation again on every step. A long chat pays for everything before it, over and over.
+- In my month, 76% of the spend was on calls with a prompt over 200k tokens (computed).
+- One built-in setting, a 200k cap on the context, could have saved about 35% of that month (estimated by replaying my logs, range 27% to 38%). Below is where it paid and where it did not.
+- Tokens are the pieces of text Claude reads and is billed by. The context is everything sent to it on each step.
+
 ## The result
 
 One month of my real usage, with and without the one setting this study points to (a 200k cap on the context):
+
+![Saving from the 200k cap: replay of my month 35%, with subagents on Sonnet 39%, without the biggest session 26%; real logs, cost per call: Opus 45%, Fable 7%, Sonnet 14% more; controlled test 4% more, runs overlap](result.svg)
+
+The green replay bars are estimates. The controlled test found no saving on a task that only just passes 200k. Dollars are list prices, not a bill.
 
 | | Without | With | Saved |
 |---|---|---|---|
@@ -19,12 +32,17 @@ One month of my real usage, with and without the one setting this study points t
 | Real logs, cost per call on Sonnet 5.5 (computed) | US$0.036 | US$0.041 | **none: 14% more** |
 | Controlled test, one 35-prompt task on Sonnet 5.5 that ends near 300k tokens (median of 3 runs) | US$3.26 | US$3.39 | **none** (runs overlap) |
 
+<details>
+<summary><b>How to read these numbers</b></summary>
+
 - "Without" is the month as logged: 39,275 API calls, measured tokens at API list prices. An open-source tool, ccusage, counts the same tokens to within 0.01% ([STUDY.md](STUDY.md), section 1).
 - The first three rows replay those same calls with the cap, so they rest on the simulator's stated assumptions. One session was 50% of the month, so the third row shows the result without it.
 - The last three rows are what really happened after I turned the setting on: four days of data, not a controlled test. The cap helps where prompts were long. My Opus 5.5 prompts had a median of 370k tokens before, Fable 5.2 199k, and Sonnet 5.5 111k, which was already under the cap (measured).
 - Cost per typed prompt fell too (Opus 5.5 median US$1.24 to US$0.46, computed), but my requests in those four days were also smaller: 12 calls per prompt against 39 (measured). So the real logs cannot separate the cap from the change in work.
 - The last row is a controlled test: the same scripted task with the cap off and on. The cap cut the tokens re-read by 22%, but on a task that only just passes 200k the two compactions cost as much as they saved. So the 35% is an estimate for long sessions like mine, not a promise for every task.
 - Dollars are list prices, not a bill. I am on a subscription, so for me the saving is usage, not money. I assume the usage limit counts tokens roughly the way the prices do, so read the same percentages as usage.
+
+</details>
 
 ## The question
 
@@ -51,6 +69,14 @@ The answer was no. The model mattered less than **how long each session had grow
 | 5 | The cheapest model is not always cheap | Haiku 5.5 pays 5 times the price above 100k tokens. 96% of my calls were above that | price published, share measured |
 | 6 | On a small task, a project file or a code map saved nothing | Same 15-prompt task, 3 runs each: US$0.86 with nothing, US$0.93 with a `CLAUDE.md`, US$0.89 with a code map too. All passed the same 18 checks | controlled test, tokens measured, medians |
 | 7 | On a task that only just passes 200k, the cap saved tokens but not money | Same 35-prompt task, 3 runs each: US$3.26 without the cap, US$3.39 with it. 22% fewer prompt tokens, two compactions per run, all 32 checks passed both ways | controlled test, tokens measured, medians |
+
+Finding 3, what one new chat of mine held before I typed:
+
+![One new chat's first prompt was 89,428 tokens: tool definitions 54%, system prompt 14%, skills list 12%, first message 5%, on-demand tool names 4%, MCP instructions 4%, hook output 2%, CLAUDE.md 2%, subagent list 2%](startup_prompt.svg)
+
+Findings 1 and 5, the same month priced on each model:
+
+![The same month priced on each model: Haiku 5.5 US$974, Sonnet 5.5 US$2,509, Opus 5.5 US$5,019, Fable 5.2 US$7,131. As logged: US$5,179](month_by_model.svg)
 
 Three results surprised me:
 
@@ -163,6 +189,7 @@ GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every 
 
 - **STUDY.md** is the full write-up: method, tables and limits for every finding.
 - **GUIDE.md** is the one-page guide for picking a model and an effort level.
+- **overview.svg**, **result.svg**, **spend_by_prompt_size.svg**, **startup_prompt.svg** and **month_by_model.svg** are the README charts. A comment in each names where its numbers come from.
 - **how_it_works.png** and **how_it_works.pdf** are the one-page map of the repo. **how_it_works.html** is their source.
 - **extract_usage.py** reads the Claude Code logs and writes one row per API call to **data/usage.csv**.
 - **prices.py** holds the price table and the function that turns tokens into dollars. It lists six models. Calls on any other model are left out, and the scripts say how many.
@@ -178,6 +205,7 @@ GitHub runs the same check on Ubuntu 24.04 and Windows with Python 3.9 on every 
 
 ## Next
 
+- A live status line that says when to start a fresh chat, built on these numbers (in progress).
 - More startup trims (connectors, the skills list budget, other unused tools), each measured like the first two.
 - More measured `/delegate` runs, on bulk reading jobs where it should pay.
 - The cap test on a task that runs to 500k tokens or more, and on Opus 5.5, to find where the cap starts to pay.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-23
+- README: an "In 30 seconds" overview with one picture, and charts for the result, the startup prompt and the month on each model (**overview.svg**, **result.svg**, **startup_prompt.svg**, **month_by_model.svg**). No numbers changed.
+- README: the notes under the result table fold into "How to read these numbers".
+
 ## 2026-11-20
 - STUDY.md cites Anthropic's docs where a finding rests on a published rule (prices, prompt caching, subagent model, the cap setting), with a Sources list at the end.
 - STUDY.md section 9 states what 3 runs per arm could detect: a difference of about 25% (computed). Also fixed a stale `test_simulate.py` name there.

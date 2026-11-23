@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Saving from the 200k cap: replay of my month 35% (27 to 38), with subagents on Sonnet 39%, without the biggest session 26%; real logs cost per call Opus 45%, Fable 7%, Sonnet 14% more; controlled test 4% more, runs overlap.">
+  <!-- Numbers: The result table in README.md. Controlled test: US$3.26 to US$3.39 = 4% more (computed). Bar length = 5 px per 1%. -->
+  <!-- Mid-grey text reads on both light and dark GitHub themes. -->
+  <text x="0" y="22" font-size="17" fill="#6e7781" text-anchor="start" font-weight="600">What the 200k cap saved</text>
+  <text x="0" y="60" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">Replay of my month (estimated)</text>
+  <text x="300" y="92" font-size="14" fill="#6e7781" text-anchor="end">200k cap</text>
+  <rect x="400" y="78" width="175" height="20" rx="3" fill="#2da44e"/>
+  <path d="M535 88 H590 M535 82 v12 M590 82 v12" stroke="#6e7781" stroke-width="2" fill="none"/>
+  <text x="598" y="93" font-size="13" fill="#2da44e" text-anchor="start" font-weight="600">35% (27 to 38)</text>
+  <text x="300" y="124" font-size="14" fill="#6e7781" text-anchor="end">Cap + subagents on Sonnet 5.5</text>
+  <rect x="400" y="110" width="195" height="20" rx="3" fill="#2da44e"/>
+  <text x="603" y="125" font-size="13" fill="#2da44e" text-anchor="start" font-weight="600">39%</text>
+  <text x="300" y="156" font-size="14" fill="#6e7781" text-anchor="end">Cap, without my biggest session</text>
+  <rect x="400" y="142" width="130" height="20" rx="3" fill="#2da44e"/>
+  <path d="M490 152 H545 M490 146 v12 M545 146 v12" stroke="#6e7781" stroke-width="2" fill="none"/>
+  <text x="553" y="157" font-size="13" fill="#2da44e" text-anchor="start" font-weight="600">26% (18 to 29)</text>
+  <text x="0" y="190" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">Real logs, cost per call before and after (computed)</text>
+  <text x="300" y="222" font-size="14" fill="#6e7781" text-anchor="end">Opus 5.5</text>
+  <rect x="400" y="208" width="225" height="20" rx="3" fill="#2da44e"/>
+  <text x="633" y="223" font-size="13" fill="#2da44e" text-anchor="start" font-weight="600">45%</text>
+  <text x="300" y="254" font-size="14" fill="#6e7781" text-anchor="end">Fable 5.2</text>
+  <rect x="400" y="240" width="35" height="20" rx="3" fill="#2da44e"/>
+  <text x="443" y="255" font-size="13" fill="#2da44e" text-anchor="start" font-weight="600">7%</text>
+  <text x="300" y="286" font-size="14" fill="#6e7781" text-anchor="end">Sonnet 5.5 (already under 200k)</text>
+  <rect x="330" y="272" width="70" height="20" rx="3" fill="#6e7781"/>
+  <text x="408" y="287" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">none: 14% more</text>
+  <text x="0" y="320" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">Controlled test, 35 prompts, median of 3 (computed from measured tokens)</text>
+  <text x="300" y="352" font-size="14" fill="#6e7781" text-anchor="end">Task ending near 300k</text>
+  <rect x="380" y="338" width="20" height="20" rx="3" fill="#6e7781"/>
+  <text x="408" y="353" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">none: 4% more, runs overlap</text>
+  <line x1="400" y1="44" x2="400" y2="366" stroke="#6e7781" stroke-width="1"/>
+  <text x="0" y="390" font-size="12" fill="#6e7781" text-anchor="start">Green bar: saving. Whisker: range when the assumed carry-over changes. Grey: no saving.</text>
+</svg>

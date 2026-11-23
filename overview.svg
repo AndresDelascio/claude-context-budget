@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Every step of a Claude Code chat re-sends the whole chat, so 76% of my spend was on prompts over 200k tokens. A 200k cap on the context saves an estimated 35% (27% to 38%) in a replay of my month.">
+  <!-- 76%: finding 1 in README (computed). 35%: The result, first row (estimated). -->
+  <!-- Mid-grey text reads on both light and dark GitHub themes. -->
+  <text x="0" y="22" font-size="17" fill="#6e7781" text-anchor="start" font-weight="600">How a Claude Code chat spends tokens</text>
+  <text x="0" y="62" font-size="15" fill="#6e7781" text-anchor="start" font-weight="600">1. Every step re-sends</text>
+  <text x="0" y="82" font-size="15" fill="#6e7781" text-anchor="start" font-weight="600">the whole chat</text>
+  <rect x="10" y="194" width="34" height="23" rx="3" fill="#6e7781"/>
+  <text x="27" y="240" font-size="12" fill="#6e7781" text-anchor="middle">step 1</text>
+  <rect x="58" y="194" width="34" height="23" rx="3" fill="#d1242f"/>
+  <rect x="58" y="168" width="34" height="23" rx="3" fill="#6e7781"/>
+  <text x="75" y="240" font-size="12" fill="#6e7781" text-anchor="middle">step 2</text>
+  <rect x="106" y="194" width="34" height="23" rx="3" fill="#d1242f"/>
+  <rect x="106" y="168" width="34" height="23" rx="3" fill="#d1242f"/>
+  <rect x="106" y="142" width="34" height="23" rx="3" fill="#6e7781"/>
+  <text x="123" y="240" font-size="12" fill="#6e7781" text-anchor="middle">step 3</text>
+  <rect x="154" y="194" width="34" height="23" rx="3" fill="#d1242f"/>
+  <rect x="154" y="168" width="34" height="23" rx="3" fill="#d1242f"/>
+  <rect x="154" y="142" width="34" height="23" rx="3" fill="#d1242f"/>
+  <rect x="154" y="116" width="34" height="23" rx="3" fill="#6e7781"/>
+  <text x="171" y="240" font-size="12" fill="#6e7781" text-anchor="middle">step 4</text>
+  <text x="0" y="268" font-size="13" fill="#6e7781" text-anchor="start">Grey = new.</text>
+  <text x="76" y="268" font-size="13" fill="#d1242f" text-anchor="start">Red = paid for again</text>
+  <path d="M222 150 h26 m-8 -7 l8 7 l-8 7" stroke="#6e7781" stroke-width="2" fill="none"/>
+  <path d="M470 150 h26 m-8 -7 l8 7 l-8 7" stroke="#6e7781" stroke-width="2" fill="none"/>
+  <text x="262" y="62" font-size="15" fill="#6e7781" text-anchor="start" font-weight="600">2. So long chats cost</text>
+  <text x="262" y="82" font-size="15" fill="#6e7781" text-anchor="start" font-weight="600">the most</text>
+  <text x="262" y="165" font-size="54" fill="#d1242f" text-anchor="start" font-weight="700">76%</text>
+  <text x="262" y="195" font-size="13" fill="#6e7781" text-anchor="start">of my month's spend was on calls</text>
+  <text x="262" y="213" font-size="13" fill="#6e7781" text-anchor="start">with a prompt over 200k tokens</text>
+  <text x="262" y="268" font-size="12" fill="#6e7781" text-anchor="start">computed from my logs</text>
+  <text x="510" y="62" font-size="15" fill="#6e7781" text-anchor="start" font-weight="600">3. What helps: a 200k</text>
+  <text x="510" y="82" font-size="15" fill="#6e7781" text-anchor="start" font-weight="600">cap on the context</text>
+  <text x="510" y="200" font-size="54" fill="#2da44e" text-anchor="start" font-weight="700">35%</text>
+  <text x="510" y="228" font-size="13" fill="#6e7781" text-anchor="start">less in a replay of my month</text>
+  <text x="510" y="268" font-size="12" fill="#6e7781" text-anchor="start">estimated, range 27% to 38%</text>
+</svg>

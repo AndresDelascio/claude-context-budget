@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 326" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="One new chat's first prompt was 89,428 tokens: tool definitions 54%, system prompt 14%, skills list 12%, first message 5%, on-demand tool names 4%, MCP instructions 4%, hook output 2%, CLAUDE.md 2%, subagent list 2%.">
+  <!-- Numbers: STUDY.md, startup table (characters measured, tokens estimated). Bar = 6 px per 1% of characters. -->
+  <!-- Mid-grey text reads on both light and dark GitHub themes. -->
+  <text x="0" y="22" font-size="17" fill="#6e7781" text-anchor="start" font-weight="600">What filled one new chat of mine before I typed: 89,428 tokens</text>
+  <text x="230" y="61" font-size="14" fill="#6e7781" text-anchor="end">Tool definitions (53 tools)</text>
+  <rect x="242" y="47" width="326" height="20" rx="3" fill="#d1242f"/>
+  <text x="576.2591896457377" y="62" font-size="13" fill="#d1242f" text-anchor="start" font-weight="600">54%  ~48,600 tokens</text>
+  <text x="230" y="89" font-size="14" fill="#6e7781" text-anchor="end">System prompt</text>
+  <rect x="242" y="75" width="87" height="20" rx="3" fill="#6e7781"/>
+  <text x="336.94534986081703" y="90" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">14%  ~13,000 tokens</text>
+  <text x="230" y="117" font-size="14" fill="#6e7781" text-anchor="end">Skills list (97 skills)</text>
+  <rect x="242" y="103" width="71" height="20" rx="3" fill="#6e7781"/>
+  <text x="320.67402631391116" y="118" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">12%  ~10,500 tokens</text>
+  <text x="230" y="145" font-size="14" fill="#6e7781" text-anchor="end">First message, other context</text>
+  <rect x="242" y="131" width="30" height="20" rx="3" fill="#6e7781"/>
+  <text x="280.1087292712522" y="146" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">5%  ~4,500 tokens</text>
+  <text x="230" y="173" font-size="14" fill="#6e7781" text-anchor="end">Names of on-demand tools</text>
+  <rect x="242" y="159" width="27" height="20" rx="3" fill="#6e7781"/>
+  <text x="276.90633104137424" y="174" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">4%  ~4,000 tokens</text>
+  <text x="230" y="201" font-size="14" fill="#6e7781" text-anchor="end">MCP server instructions</text>
+  <rect x="242" y="187" width="24" height="20" rx="3" fill="#6e7781"/>
+  <text x="274.2630439437558" y="202" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">4%  ~3,600 tokens</text>
+  <text x="230" y="229" font-size="14" fill="#6e7781" text-anchor="end">Hook output</text>
+  <rect x="242" y="215" width="12" height="20" rx="3" fill="#6e7781"/>
+  <text x="262.43843829554373" y="230" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">2%  ~1,900 tokens</text>
+  <text x="230" y="257" font-size="14" fill="#6e7781" text-anchor="end">My CLAUDE.md</text>
+  <rect x="242" y="243" width="12" height="20" rx="3" fill="#2da44e"/>
+  <text x="261.69374985130025" y="258" font-size="13" fill="#2da44e" text-anchor="start" font-weight="600">2%  ~1,700 tokens</text>
+  <text x="230" y="285" font-size="14" fill="#6e7781" text-anchor="end">Subagent types list</text>
+  <rect x="242" y="271" width="11" height="20" rx="3" fill="#6e7781"/>
+  <text x="260.71114177630795" y="286" font-size="13" fill="#6e7781" text-anchor="start" font-weight="600">2%  ~1,600 tokens</text>
+  <text x="0" y="316" font-size="12" fill="#6e7781" text-anchor="start">Total measured. Tokens per part estimated: the total shared out by characters.</text>
+</svg>

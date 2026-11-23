@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 282" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="The same month priced on each model: Haiku 5.5 US$974, Sonnet 5.5 US$2,509, Opus 5.5 US$5,019, Fable 5.2 US$7,131. As logged on my real mix: US$5,179.">
+  <!-- Numbers: STUDY.md per-model table and README (computed). Bar = 440 px for US$7,131. -->
+  <!-- Mid-grey text reads on both light and dark GitHub themes. -->
+  <text x="0" y="22" font-size="17" fill="#6e7781" text-anchor="start" font-weight="600">My month, priced on each model</text>
+  <text x="110" y="64" font-size="14" fill="#6e7781" text-anchor="end">Haiku 5.5</text>
+  <rect x="122" y="50" width="60" height="22" rx="3" fill="#6e7781"/>
+  <text x="190.09816295049782" y="66" font-size="14" fill="#6e7781" text-anchor="start" font-weight="600">US$974</text>
+  <text x="110" y="100" font-size="14" fill="#6e7781" text-anchor="end">Sonnet 5.5</text>
+  <rect x="122" y="86" width="155" height="22" rx="3" fill="#6e7781"/>
+  <text x="284.8113869022577" y="102" font-size="14" fill="#6e7781" text-anchor="start" font-weight="600">US$2,509</text>
+  <text x="110" y="136" font-size="14" fill="#6e7781" text-anchor="end">Opus 5.5</text>
+  <rect x="122" y="122" width="310" height="22" rx="3" fill="#6e7781"/>
+  <text x="439.6844762305427" y="138" font-size="14" fill="#6e7781" text-anchor="start" font-weight="600">US$5,019</text>
+  <text x="110" y="172" font-size="14" fill="#6e7781" text-anchor="end">Fable 5.2</text>
+  <rect x="122" y="158" width="440" height="22" rx="3" fill="#6e7781"/>
+  <text x="570.0" y="174" font-size="14" fill="#6e7781" text-anchor="start" font-weight="600">US$7,131</text>
+  <text x="110" y="216" font-size="14" fill="#d1242f" text-anchor="end">As logged</text>
+  <rect x="122" y="202" width="320" height="22" rx="3" fill="#d1242f"/>
+  <text x="449.5568643948955" y="218" font-size="14" fill="#d1242f" text-anchor="start" font-weight="600">US$5,179  (my real mix of models)</text>
+  <text x="0" y="254" font-size="12" fill="#6e7781" text-anchor="start">Computed at list prices, assuming the same tokens on every model. Haiku is only 0.4x Sonnet here:</text>
+  <text x="0" y="272" font-size="12" fill="#6e7781" text-anchor="start">above 100k tokens it pays 5 times the price, and 96% of my calls were above that.</text>
+</svg>
